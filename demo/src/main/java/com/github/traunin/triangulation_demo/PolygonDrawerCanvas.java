@@ -44,6 +44,23 @@ public class PolygonDrawerCanvas {
             }
         };
         parent.heightProperty().addListener(listener);
+
+
+        canvas.setOnMousePressed(e -> {
+            System.out.println("pressed");
+        });
+
+        canvas.setOnMouseReleased(e -> {
+            System.out.println("released");
+        });
+
+        canvas.setOnMouseMoved(e -> {
+            System.out.println("move");
+        });
+
+        canvas.setOnMouseDragged(e -> {
+            System.out.println("drag");
+        });
     }
 
     public void initializePolygon() {
