@@ -13,11 +13,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 
 public class PolygonDrawerCanvas {
-
-    private final static float DEFAULT_POLYGON_SIZE = 50f;
+    private final static Color DEFAULT_VERTEX_COLOR = Color.RED;
+    private final static float DEFAULT_POLYGON_SIZE = 100f;
     private final static int SIDE_COUNT = 6;
-    private final static float VERTEX_SIZE = 5f;
-    private final List<Vector2f> vertices = new ArrayList<>();
+    private final static float VERTEX_SIZE = 10f;
+    private final List<Vertex> vertices = new ArrayList<>();
     private final Canvas canvas;
 
     /**
@@ -47,12 +47,28 @@ public class PolygonDrawerCanvas {
     }
 
     public void initializePolygon() {
-        for (int i = 0; i < SIDE_COUNT; i++) {
-            vertices.add(new Vector2f(
-                (float) (Math.cos(i * 2 * Math.PI / SIDE_COUNT) * DEFAULT_POLYGON_SIZE + canvas.getWidth() / 2),
-                (float) (Math.sin(i * 2 * Math.PI / SIDE_COUNT) * DEFAULT_POLYGON_SIZE + canvas.getHeight() / 2)
+        Vertex initialVertex = new Vertex(new Vector2f(
+            (float) (DEFAULT_POLYGON_SIZE + canvas.getWidth() / 2),
+            (float) (canvas.getHeight() / 2)
+        ));
+        vertices.add(initialVertex);
+
+        // polygon has at least 3 vertices
+        int sides = Math.max(SIDE_COUNT, 3);
+
+        Vertex prevVertex = initialVertex;
+        for (int i = 1; i < sides; i++) {
+            Vertex currentVertex = new Vertex(new Vector2f(
+                (float) (Math.cos(i * 2 * Math.PI / sides) * DEFAULT_POLYGON_SIZE + canvas.getWidth() / 2),
+                (float) (Math.sin(i * 2 * Math.PI / sides) * DEFAULT_POLYGON_SIZE + canvas.getHeight() / 2)
             ));
+
+            vertices.add(currentVertex);
+            prevVertex.connect(currentVertex);
+            prevVertex = currentVertex;
         }
+
+        prevVertex.connect(initialVertex);
     }
 
     private void addSizeListener(ObservableValue<? extends Number> property, Consumer<Double> sizeSetter) {
@@ -68,13 +84,17 @@ public class PolygonDrawerCanvas {
         double height = canvas.getHeight();
         ctx.clearRect(0, 0, width, height);
 
-        ctx.setFill(Color.RED);
-        for (Vector2f vertex : vertices) {
+        for (Vertex vertex : vertices) {
+            drawEdge(vertex, ctx);
+        }
+
+        for (Vertex vertex : vertices) {
             drawVertex(vertex, ctx);
         }
     }
 
-    private void drawVertex(Vector2f vertex, GraphicsContext ctx) {
+    private void drawVertex(Vertex vertex, GraphicsContext ctx) {
+        ctx.setFill(vertex.getColor());
         ctx.fillArc(
             vertex.getX() - VERTEX_SIZE / 2,
             vertex.getY() - VERTEX_SIZE / 2,
@@ -84,5 +104,52 @@ public class PolygonDrawerCanvas {
             360,
             ArcType.ROUND
         );
+    }
+
+    private void drawEdge(Vertex vertex, GraphicsContext ctx) {
+        ctx.strokeLine(vertex.getX(), vertex.getY(), vertex.getConnected().getX(), vertex.getConnected().getY());
+    }
+
+    private static class Vertex {
+        private Color color = DEFAULT_VERTEX_COLOR;
+        private Vector2f position;
+        private Vertex connected;
+
+        public Vertex(Vector2f position, Vertex connected) {
+            this(position);
+            this.connected = connected;
+        }
+
+        public Vertex(Vector2f position) {
+            this.position = position;
+        }
+
+        public Vector2f getPosition() {
+            return position;
+        }
+
+        public void setPosition(Vector2f position) {
+            this.position = position;
+        }
+
+        public Vertex getConnected() {
+            return connected;
+        }
+
+        public void connect(Vertex connection) {
+            this.connected = connection;
+        }
+
+        public float getX() {
+            return position.getX();
+        }
+
+        public float getY() {
+            return position.getY();
+        }
+
+        public Color getColor() {
+            return color;
+        }
     }
 }
