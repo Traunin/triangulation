@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
@@ -14,11 +15,15 @@ import javafx.scene.shape.ArcType;
 
 public class PolygonDrawerCanvas {
     private final static Color DEFAULT_VERTEX_COLOR = Color.RED;
+    private final static Color HIGHTLIGHT_VERTEX_COLOR = Color.YELLOW;
     private final static float DEFAULT_POLYGON_SIZE = 100f;
     private final static int SIDE_COUNT = 6;
-    private final static float VERTEX_SIZE = 10f;
+    private final static float VERTEX_SIZE = 20f;
     private final List<Vertex> vertices = new ArrayList<>();
     private final Canvas canvas;
+    private Vertex selectedVertex = null;
+    private double offsetX;
+    private double offsetY;
 
     /**
      * Attaches listeners to parent to update canvas size and redraw it upon parent size changes
@@ -47,19 +52,30 @@ public class PolygonDrawerCanvas {
 
 
         canvas.setOnMousePressed(e -> {
-            System.out.println("pressed");
+            if (selectedVertex != null) {
+                canvas.setCursor(Cursor.CLOSED_HAND);
+                offsetX = e.getX() - selectedVertex.getX();
+                offsetY = e.getY() - selectedVertex.getY();
+            }
         });
 
         canvas.setOnMouseReleased(e -> {
-            System.out.println("released");
+            if (selectedVertex != null) {
+                canvas.setCursor(Cursor.OPEN_HAND);
+            }
         });
 
         canvas.setOnMouseMoved(e -> {
-            System.out.println("move");
+            highlightVertex(e.getX(), e.getY());
+            redraw();
         });
 
         canvas.setOnMouseDragged(e -> {
-            System.out.println("drag");
+            if (selectedVertex != null) {
+                selectedVertex.setPosition(new Vector2f((float) (e.getX() - offsetX), (float) (e.getY() - offsetY)));
+                canvas.setCursor(Cursor.CLOSED_HAND);
+            }
+            redraw();
         });
     }
 
@@ -111,7 +127,7 @@ public class PolygonDrawerCanvas {
     }
 
     private void drawVertex(Vertex vertex, GraphicsContext ctx) {
-        ctx.setFill(vertex.getColor());
+        ctx.setFill(vertex == selectedVertex ?  HIGHTLIGHT_VERTEX_COLOR : DEFAULT_VERTEX_COLOR);
         ctx.fillArc(
             vertex.getX() - VERTEX_SIZE / 2,
             vertex.getY() - VERTEX_SIZE / 2,
@@ -127,8 +143,19 @@ public class PolygonDrawerCanvas {
         ctx.strokeLine(vertex.getX(), vertex.getY(), vertex.getConnected().getX(), vertex.getConnected().getY());
     }
 
+    private void highlightVertex(double x, double y) {
+        for (Vertex vertex : vertices) {
+            if (vertex.getDistance(x, y) <= VERTEX_SIZE / 2) {
+                selectedVertex = vertex;
+                canvas.setCursor(Cursor.OPEN_HAND);
+                return;
+            }
+        }
+        canvas.setCursor(Cursor.DEFAULT);
+        selectedVertex = null;
+    }
+
     private static class Vertex {
-        private Color color = DEFAULT_VERTEX_COLOR;
         private Vector2f position;
         private Vertex connected;
 
@@ -165,8 +192,10 @@ public class PolygonDrawerCanvas {
             return position.getY();
         }
 
-        public Color getColor() {
-            return color;
+        public double getDistance(double x, double y) {
+            double dX = x - position.getX();
+            double dY = y - position.getY();
+            return Math.sqrt(dX * dX + dY * dY);
         }
     }
 }
