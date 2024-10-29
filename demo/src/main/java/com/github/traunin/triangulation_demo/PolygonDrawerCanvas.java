@@ -23,6 +23,7 @@ public class PolygonDrawerCanvas {
     private final List<Vertex> vertices = new ArrayList<>();
     private final Canvas canvas;
     private Vertex selectedVertex = null;
+    private Vertex ghostVertexEdge = null;
     private double offsetX;
     private double offsetY;
 
@@ -57,7 +58,20 @@ public class PolygonDrawerCanvas {
                 canvas.setCursor(Cursor.CLOSED_HAND);
                 offsetX = e.getX() - selectedVertex.getX();
                 offsetY = e.getY() - selectedVertex.getY();
+                return;
             }
+
+            if (ghostVertexEdge != null) {
+                Vertex newVertex = new Vertex(
+                    getPointOnEdge(ghostVertexEdge, e.getX(), e.getY()),
+                    HIGHTLIGHT_VERTEX_COLOR
+                );
+                newVertex.connect(ghostVertexEdge.getConnected());
+                ghostVertexEdge.connect(newVertex);
+                vertices.add(newVertex);
+                selectedVertex = newVertex;
+            }
+            redraw();
         });
 
         canvas.setOnMouseReleased(e -> {
@@ -150,9 +164,13 @@ public class PolygonDrawerCanvas {
                 vertex.getX(), vertex.getY(), vertex.getConnected().getX(), vertex.getConnected().getY(), mouseX, mouseY
             )) {
                 canvas.setCursor(Cursor.CROSSHAIR);
+                ghostVertexEdge = vertex;
                 drawVertex(new Vertex(getPointOnEdge(vertex, mouseX, mouseY), GHOST_VERTEX_COLOR), ctx);
+                return;
             }
         }
+
+        ghostVertexEdge = null;
     }
 
     private boolean isCursorOnEdge(
