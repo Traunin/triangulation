@@ -33,7 +33,7 @@ public class Triangulation {
         int vertexCount = vertices.size();
 
         if (vertexCount < 3) {
-            throw new TriangulationException("Not enough vertex indices for a polygon");
+            throw new TriangulationException("Not enough vertices for a polygon");
         }
 
         List<T[]> triangles = new ArrayList<>(vertexCount - 2);
