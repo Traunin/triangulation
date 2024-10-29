@@ -3,40 +3,29 @@ package com.github.traunin;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class Triangulation {
-    public static <T extends Vector2f> List<T[]> convexPolygonTriangulate(List<T> vertices, List<Integer> vertexIndices) {
-        int vertexCount = vertexIndices.size();
+    public static List<int[]> convexPolygonTriangulate(List<Integer> vertexIndices) {
+        int vertexIndicesCount = vertexIndices.size();
 
-        if (vertexCount < 3) {
+        if (vertexIndicesCount < 3) {
             throw new TriangulationException("Not enough vertex indices for a polygon");
         }
 
-        List<T> orderedVertices = new ArrayList<>(vertexCount);
-        for (int i = 0; i < vertexCount; i++) {
-            orderedVertices.set(i, vertices.get(vertexIndices.get(i)));
+        List<int[]> triangles = new ArrayList<>(vertexIndicesCount - 2);
+
+        for (int i = 2; i < vertexIndicesCount; i++) {
+            triangles.add(new int[]{0, vertexIndices.get(i), vertexIndices.get(i - 1)});
         }
-
-
-        return convexPolygonTriangulate(orderedVertices);
-    }
-
-    @SafeVarargs
-    public static <T extends Vector2f> List<T[]> convexPolygonTriangulate(T... vertices) {
-        List<T> verticesList = Arrays.stream(vertices).toList();
-
-        return convexPolygonTriangulate(verticesList);
-    }
-
-    public static <T extends Vector2f> List<T[]> convexPolygonTriangulate(List<T> vertices) {
-        int vertexCount = vertices.size();
-
-        if (vertexCount < 3) {
-            throw new TriangulationException("Not enough vertices for a polygon");
-        }
-
-        List<T[]> triangles = new ArrayList<>(vertexCount - 2);
 
         return triangles;
+    }
+
+
+    public static List<int[]> convexPolygonTriangulate(int n) {
+        List<Integer> vertexIndices = IntStream.rangeClosed(0, n - 1).boxed().toList();
+
+        return convexPolygonTriangulate(vertexIndices);
     }
 }
