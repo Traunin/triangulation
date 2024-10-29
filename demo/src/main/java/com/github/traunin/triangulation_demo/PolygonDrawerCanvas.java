@@ -9,6 +9,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
@@ -55,13 +56,29 @@ public class PolygonDrawerCanvas {
 
         canvas.setOnMousePressed(e -> {
             if (selectedVertex != null) {
+                if (e.getButton() == MouseButton.SECONDARY && vertices.size() > 3) {
+                    Vertex previous = null;
+                    for (Vertex vertex : vertices) {
+                        if (vertex.getConnected() == selectedVertex) {
+                            previous = vertex;
+                            break;
+                        }
+                    }
+                    if (previous == null) {
+                        return;
+                    }
+                    previous.connect(selectedVertex.getConnected());
+                    vertices.remove(selectedVertex);
+                    redraw();
+                    return;
+                }
                 canvas.setCursor(Cursor.CLOSED_HAND);
                 offsetX = e.getX() - selectedVertex.getX();
                 offsetY = e.getY() - selectedVertex.getY();
                 return;
             }
 
-            if (ghostVertexEdge != null) {
+            if (ghostVertexEdge != null && e.getButton() == MouseButton.PRIMARY) {
                 Vertex newVertex = new Vertex(
                     getPointOnEdge(ghostVertexEdge, e.getX(), e.getY()),
                     HIGHTLIGHT_VERTEX_COLOR
