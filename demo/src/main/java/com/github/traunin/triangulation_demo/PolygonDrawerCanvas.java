@@ -62,7 +62,7 @@ public class PolygonDrawerCanvas {
                 if (e.getButton() == MouseButton.SECONDARY && vertices.size() > 3) {
                     Vertex previous = null;
                     for (Vertex vertex : vertices) {
-                        if (vertex.getConnected() == selectedVertex) {
+                        if (vertex.connected() == selectedVertex) {
                             previous = vertex;
                             break;
                         }
@@ -70,23 +70,23 @@ public class PolygonDrawerCanvas {
                     if (previous == null) {
                         return;
                     }
-                    previous.connect(selectedVertex.getConnected());
+                    previous.connect(selectedVertex.connected());
                     vertices.remove(selectedVertex);
                     redraw();
                     return;
                 }
                 canvas.setCursor(Cursor.CLOSED_HAND);
-                offsetX = e.getX() - selectedVertex.getX();
-                offsetY = e.getY() - selectedVertex.getY();
+                offsetX = e.getX() - selectedVertex.x();
+                offsetY = e.getY() - selectedVertex.y();
                 return;
             }
 
             if (ghostVertexEdge != null && e.getButton() == MouseButton.PRIMARY) {
                 Vertex newVertex = new Vertex(
-                    getPointOnEdge(ghostVertexEdge, e.getX(), e.getY()),
+                    pointOnEdge(ghostVertexEdge, e.getX(), e.getY()),
                     HIGHTLIGHT_VERTEX_COLOR
                 );
-                newVertex.connect(ghostVertexEdge.getConnected());
+                newVertex.connect(ghostVertexEdge.connected());
                 ghostVertexEdge.connect(newVertex);
                 vertices.add(newVertex);
                 selectedVertex = newVertex;
@@ -160,9 +160,9 @@ public class PolygonDrawerCanvas {
             Vertex startVertex = vertices.get(0);
             vertexIndices.add(0);
             for (
-                Vertex currentVertex = startVertex.getConnected();
-                currentVertex != startVertex;
-                currentVertex = currentVertex.getConnected()
+                    Vertex currentVertex = startVertex.connected();
+                    currentVertex != startVertex;
+                    currentVertex = currentVertex.connected()
             ) {
                 vertexIndices.add(vertices.indexOf(currentVertex));
             }
@@ -187,24 +187,24 @@ public class PolygonDrawerCanvas {
 
     private void drawTriangle(int[] vertexIndices, GraphicsContext ctx) {
         double[] x = new double[] {
-            vertices.get(vertexIndices[0]).getX(),
-            vertices.get(vertexIndices[1]).getX(),
-            vertices.get(vertexIndices[2]).getX(),
+            vertices.get(vertexIndices[0]).x(),
+            vertices.get(vertexIndices[1]).x(),
+            vertices.get(vertexIndices[2]).x(),
         };
 
         double[] y = new double[] {
-            vertices.get(vertexIndices[0]).getY(),
-            vertices.get(vertexIndices[1]).getY(),
-            vertices.get(vertexIndices[2]).getY(),
+            vertices.get(vertexIndices[0]).y(),
+            vertices.get(vertexIndices[1]).y(),
+            vertices.get(vertexIndices[2]).y(),
         };
         ctx.fillPolygon(x, y, 3);
     }
 
     private void drawVertex(Vertex vertex, GraphicsContext ctx) {
-        ctx.setFill(vertex.getColor());
+        ctx.setFill(vertex.color());
         ctx.fillArc(
-            vertex.getX() - VERTEX_SIZE / 2,
-            vertex.getY() - VERTEX_SIZE / 2,
+            vertex.x() - VERTEX_SIZE / 2,
+            vertex.y() - VERTEX_SIZE / 2,
             VERTEX_SIZE,
             VERTEX_SIZE,
             0,
@@ -216,11 +216,11 @@ public class PolygonDrawerCanvas {
     private void drawGhostVertex(double mouseX, double mouseY, GraphicsContext ctx) {
         for (Vertex vertex : vertices) {
             if (isCursorOnEdge(
-                vertex.getX(), vertex.getY(), vertex.getConnected().getX(), vertex.getConnected().getY(), mouseX, mouseY
+                vertex.x(), vertex.y(), vertex.connected().x(), vertex.connected().y(), mouseX, mouseY
             )) {
                 canvas.setCursor(Cursor.CROSSHAIR);
                 ghostVertexEdge = vertex;
-                drawVertex(new Vertex(getPointOnEdge(vertex, mouseX, mouseY), GHOST_VERTEX_COLOR), ctx);
+                drawVertex(new Vertex(pointOnEdge(vertex, mouseX, mouseY), GHOST_VERTEX_COLOR), ctx);
                 return;
             }
         }
@@ -240,43 +240,43 @@ public class PolygonDrawerCanvas {
             return false;
         }
 
-        double mouseToEdgeDistance = getDistanceFromPointToLine(
+        double mouseToEdgeDistance = distanceFromPointToLine(
             mouseX, mouseY, edgePoint1X, edgePoint1Y, edgePoint2X, edgePoint2Y
         );
 
         return  mouseToEdgeDistance <= VERTEX_SIZE / 2;
     }
 
-    private double getDistanceFromPointToLine (double x0, double y0, double x1, double y1, double x2, double y2) {
+    private double distanceFromPointToLine(double x0, double y0, double x1, double y1, double x2, double y2) {
         return Math.abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1) /
                 Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
     }
 
-    private Vector2f getPointOnEdge(Vertex vertex, double mouseX, double mouseY) {
-        Vector2f edgePoint1 = vertex.getPosition();
-        Vector2f edgePoint2 = vertex.getConnected().getPosition();
+    private Vector2f pointOnEdge(Vertex vertex, double mouseX, double mouseY) {
+        Vector2f edgePoint1 = vertex.position();
+        Vector2f edgePoint2 = vertex.connected().position();
 
-        double edgeXLen = edgePoint2.getX() - edgePoint1.getX();
-        double edgeYLen = edgePoint2.getY() - edgePoint1.getY();
+        double edgeXLen = edgePoint2.x() - edgePoint1.x();
+        double edgeYLen = edgePoint2.y() - edgePoint1.y();
 
         double edgeLenSquare = edgeXLen * edgeXLen + edgeYLen * edgeYLen;
-        double t = ((mouseX - edgePoint1.getX()) * (edgeXLen) + (mouseY - edgePoint1.getY()) * edgeYLen) / edgeLenSquare;
+        double t = ((mouseX - edgePoint1.x()) * (edgeXLen) + (mouseY - edgePoint1.y()) * edgeYLen) / edgeLenSquare;
 
         return new Vector2f(
-            (float) (edgePoint1.getX() + edgeXLen * t),
-            (float) (edgePoint1.getY() + edgeYLen * t)
+            (float) (edgePoint1.x() + edgeXLen * t),
+            (float) (edgePoint1.y() + edgeYLen * t)
         );
     }
 
     private void drawEdge(Vertex vertex, GraphicsContext ctx) {
-        if (vertex.getConnected() != null) {
-            ctx.strokeLine(vertex.getX(), vertex.getY(), vertex.getConnected().getX(), vertex.getConnected().getY());
+        if (vertex.connected() != null) {
+            ctx.strokeLine(vertex.x(), vertex.y(), vertex.connected().x(), vertex.connected().y());
         }
     }
 
     private void highlightVertex(double x, double y) {
         for (Vertex vertex : vertices) {
-            if (vertex.getDistance(x, y) <= VERTEX_SIZE / 2) {
+            if (vertex.distance(x, y) <= VERTEX_SIZE / 2) {
                 selectedVertex = vertex;
                 vertex.setColor(HIGHTLIGHT_VERTEX_COLOR);
                 canvas.setCursor(Cursor.OPEN_HAND);
@@ -310,7 +310,7 @@ public class PolygonDrawerCanvas {
             this.color = DEFAULT_VERTEX_COLOR;
         }
 
-        public Vector2f getPosition() {
+        public Vector2f position() {
             return position;
         }
 
@@ -318,7 +318,7 @@ public class PolygonDrawerCanvas {
             this.position = position;
         }
 
-        public Vertex getConnected() {
+        public Vertex connected() {
             return connected;
         }
 
@@ -326,15 +326,15 @@ public class PolygonDrawerCanvas {
             this.connected = connection;
         }
 
-        public float getX() {
-            return position.getX();
+        public float x() {
+            return position.x();
         }
 
-        public float getY() {
-            return position.getY();
+        public float y() {
+            return position.y();
         }
 
-        public Color getColor() {
+        public Color color() {
             return color;
         }
 
@@ -342,9 +342,9 @@ public class PolygonDrawerCanvas {
             this.color = color;
         }
 
-        public double getDistance(double x, double y) {
-            double dX = x - position.getX();
-            double dY = y - position.getY();
+        public double distance(double x, double y) {
+            double dX = x - position.x();
+            double dY = y - position.y();
             return Math.sqrt(dX * dX + dY * dY);
         }
     }

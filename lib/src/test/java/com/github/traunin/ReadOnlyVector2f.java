@@ -9,11 +9,11 @@ public class ReadOnlyVector2f implements Vector2f {
         this.y = y;
     }
 
-    public float getX() {
+    public float x() {
         return x;
     }
 
-    public float getY() {
+    public float y() {
         return y;
     }
 }

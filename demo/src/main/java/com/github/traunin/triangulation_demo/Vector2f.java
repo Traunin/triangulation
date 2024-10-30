@@ -9,7 +9,7 @@ public class Vector2f {
         this.y = y;
     }
 
-    public float getX() {
+    public float x() {
         return x;
     }
 
@@ -17,7 +17,7 @@ public class Vector2f {
         this.x = x;
     }
 
-    public float getY() {
+    public float y() {
         return y;
     }
 
