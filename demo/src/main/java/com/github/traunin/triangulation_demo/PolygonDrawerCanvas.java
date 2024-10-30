@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.github.traunin.Triangulation;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Cursor;
@@ -15,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 
 public class PolygonDrawerCanvas {
+    private static boolean enableTriangulation = false;
     private final static Color DEFAULT_VERTEX_COLOR = Color.RED;
     private final static Color HIGHTLIGHT_VERTEX_COLOR = Color.YELLOW;
     private final static Color GHOST_VERTEX_COLOR = new Color(1, 0, 0, 0.1);
@@ -47,6 +49,7 @@ public class PolygonDrawerCanvas {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 initializePolygon();
+                enableTriangulation = true;
                 redraw();
                 parent.heightProperty().removeListener(this);
             }
@@ -152,6 +155,26 @@ public class PolygonDrawerCanvas {
         double width = canvas.getWidth();
         double height = canvas.getHeight();
         ctx.clearRect(0, 0, width, height);
+        if (enableTriangulation) {
+            List<Integer> vertexIndices = new ArrayList<>(vertices.size());
+            Vertex startVertex = vertices.get(0);
+            vertexIndices.add(0);
+            for (
+                Vertex currentVertex = startVertex.getConnected();
+                currentVertex != startVertex;
+                currentVertex = currentVertex.getConnected()
+            ) {
+                vertexIndices.add(vertices.indexOf(currentVertex));
+            }
+
+            List<int[]> triangles = Triangulation.convexPolygonTriangulate(vertexIndices);
+            int i = 0;
+            for (int[] triangle : triangles) {
+                ctx.setFill(Color.hsb(300f*i/triangles.size(), 1, 1));
+                drawTriangle(triangle, ctx);
+                i++;
+            }
+        }
 
         for (Vertex vertex : vertices) {
             drawEdge(vertex, ctx);
@@ -160,6 +183,21 @@ public class PolygonDrawerCanvas {
         for (Vertex vertex : vertices) {
             drawVertex(vertex, ctx);
         }
+    }
+
+    private void drawTriangle(int[] vertexIndices, GraphicsContext ctx) {
+        double[] x = new double[] {
+            vertices.get(vertexIndices[0]).getX(),
+            vertices.get(vertexIndices[1]).getX(),
+            vertices.get(vertexIndices[2]).getX(),
+        };
+
+        double[] y = new double[] {
+            vertices.get(vertexIndices[0]).getY(),
+            vertices.get(vertexIndices[1]).getY(),
+            vertices.get(vertexIndices[2]).getY(),
+        };
+        ctx.fillPolygon(x, y, 3);
     }
 
     private void drawVertex(Vertex vertex, GraphicsContext ctx) {
