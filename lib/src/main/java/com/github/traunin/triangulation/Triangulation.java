@@ -55,7 +55,8 @@ public class Triangulation {
         List<Integer> potentialEars = new ArrayList<>(vertexIndices);
         int potentialEarsCount = vertexIndicesCount;
 
-        for (int t = potentialEarsCount; t > 2; t--) {
+        for (boolean hasClippedEars = true; hasClippedEars;) {
+            hasClippedEars = false;
             for (int i = 1; i < potentialEarsCount - 1; i++) {
                 int prevVertexIndex = potentialEars.get(i - 1);
                 int curVertexIndex = potentialEars.get(i);
@@ -96,6 +97,7 @@ public class Triangulation {
                     potentialEars.remove(i);
                     potentialEarsCount--;
                     i--;
+                    hasClippedEars = true;
                 }
             }
         }
