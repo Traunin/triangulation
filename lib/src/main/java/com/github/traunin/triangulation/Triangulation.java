@@ -7,7 +7,7 @@ import java.util.stream.IntStream;
 public class Triangulation {
     private static void checkVertexIndicesCount(int n) {
         if (n < 3) {
-            throw new TriangulationException("Not enough vertex indices for a polygon");
+            throw new IllegalArgumentException("Not enough vertex indices for a polygon");
         }
     }
 
@@ -44,7 +44,7 @@ public class Triangulation {
         int vertexCount = vertices.size();
         for (Integer vertexIndex : vertexIndices) {
             if (vertexIndex >= vertexCount) {
-                throw new TriangulationException(
+                throw new IllegalArgumentException(
                     String.format("Vertex index %d is outside of vertex list of length %d", vertexIndex, vertexCount)
                 );
             }

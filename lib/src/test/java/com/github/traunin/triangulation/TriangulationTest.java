@@ -38,7 +38,7 @@ public class TriangulationTest {
         try {
             Triangulation.convexPolygonTriangulate(2);
             Assertions.fail();
-        } catch (TriangulationException exception) {
+        } catch (IllegalArgumentException exception) {
             String expectedError = "Not enough vertex indices for a polygon";
             Assertions.assertEquals(expectedError, exception.getMessage());
         }
@@ -49,7 +49,7 @@ public class TriangulationTest {
         try {
             Triangulation.earClippingTriangulate(TRIANGLE, Arrays.asList(1, 2, 3));
             Assertions.fail();
-        } catch (TriangulationException exception) {
+        } catch (IllegalArgumentException exception) {
             String expectedError = "Vertex index 3 is outside of vertex list of length 3";
             Assertions.assertEquals(expectedError, exception.getMessage());
         }
