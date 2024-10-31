@@ -20,5 +20,5 @@ javafx {
 }
 
 application {
-    mainClass = "com.github.traunin.triangulation_demo.App"
+    mainClass = "com.github.traunin.triangulation.demo.App"
 }
