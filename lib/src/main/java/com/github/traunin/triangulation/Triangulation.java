@@ -102,6 +102,10 @@ public class Triangulation {
             }
         }
 
+        if (triangles.size() != vertexIndicesCount - 2) {
+            throw new TriangulationException("Polygon has self-intersections");
+        }
+
         return triangles;
     }
 }
