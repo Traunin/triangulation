@@ -12,6 +12,14 @@ public class TriangulationTest {
         new ReadOnlyVector2f(3, 0),
         new ReadOnlyVector2f(0, 4)
     );
+
+    private final static List<ReadOnlyVector2f> SELF_INTERSECTING_POLYGON = Arrays.asList(
+            new ReadOnlyVector2f(0, 0),
+            new ReadOnlyVector2f(0, 2),
+            new ReadOnlyVector2f(-1, 1),
+            new ReadOnlyVector2f(2, 0)
+    );
+
     @Test
     public void testConvexTriangulation() {
         List<int[]> triangleList = Triangulation.convexPolygonTriangulate(Arrays.asList(0, 1, 2, 3, 4));
@@ -38,6 +46,17 @@ public class TriangulationTest {
             Assertions.fail();
         } catch (TriangulationException exception) {
             String expectedError = "Vertex index 3 is outside of vertex list of length 3";
+            Assertions.assertEquals(expectedError, exception.getMessage());
+        }
+    }
+
+    @Test
+    public void testSelfIntersectingPolygon() {
+        try {
+            Triangulation.earClippingTriangulate(SELF_INTERSECTING_POLYGON);
+            Assertions.fail();
+        } catch (TriangulationException exception) {
+            String expectedError = "Polygon has self-intersections";
             Assertions.assertEquals(expectedError, exception.getMessage());
         }
     }
