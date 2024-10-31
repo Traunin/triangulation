@@ -74,13 +74,17 @@ public class Triangulation {
                 boolean isEar = true;
 
                 // check if no other points in triangle
-                for (int j = 0; j < vertexCount; j++) {
-                    if (j >= i - 1 && j <= i + 1) {
-                        // TODO this is cancer, split into two cycles?
+                for (int j = 0; j < vertexIndicesCount; j++) {
+                    int checkedVertexIndex = vertexIndices.get(j);
+                    if (
+                        checkedVertexIndex == prevVertexIndex ||
+                        checkedVertexIndex == curVertexIndex ||
+                        checkedVertexIndex == nextVertexIndex
+                    ) {
                         continue;
                     }
 
-                    Vector2f checkedVertex = vertices.get(j);
+                    Vector2f checkedVertex = vertices.get(checkedVertexIndex);
                     if (VectorMath.isPointInTriangle(prevVertex, curVertex, nextVertex, checkedVertex)) {
                         isEar = false;
                         break;
