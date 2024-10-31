@@ -19,10 +19,10 @@ public class TriangulationTest {
     );
 
     private final static List<ReadOnlyVector2f> SELF_INTERSECTING_POLYGON = Arrays.asList(
-            new ReadOnlyVector2f(0, 0),
-            new ReadOnlyVector2f(0, 2),
-            new ReadOnlyVector2f(-1, 1),
-            new ReadOnlyVector2f(2, 0)
+        new ReadOnlyVector2f(0, 0),
+        new ReadOnlyVector2f(0, 2),
+        new ReadOnlyVector2f(-1, 1),
+        new ReadOnlyVector2f(2, 0)
     );
 
     @Test
