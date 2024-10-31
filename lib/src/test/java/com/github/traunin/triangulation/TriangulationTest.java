@@ -1,12 +1,17 @@
 package com.github.traunin.triangulation;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class TriangulationTest {
+    private final static Random RANDOM = new Random();
+
     private final static List<ReadOnlyVector2f> TRIANGLE = Arrays.asList(
         new ReadOnlyVector2f(0, 0),
         new ReadOnlyVector2f(3, 0),
@@ -59,5 +64,23 @@ public class TriangulationTest {
             String expectedError = "Polygon has self-intersections";
             Assertions.assertEquals(expectedError, exception.getMessage());
         }
+    }
+
+    @RepeatedTest(10)
+    public void testRandomPolygon() {
+        int verticesCount = 10;
+        float size = 10;
+        List<ReadOnlyVector2f> randomPolygon = new ArrayList<>(10);
+
+        for (int i = 0; i < verticesCount; i++) {
+            float randomSize = RANDOM.nextFloat(size, size + size);
+            randomPolygon.add(new ReadOnlyVector2f(
+                (float) (Math.cos(i * 2 * Math.PI / verticesCount) * randomSize),
+                (float) (Math.sin(i * 2 * Math.PI / verticesCount) * randomSize)
+            ));
+        }
+
+        List<int[]> triangles = Triangulation.earClippingTriangulate(randomPolygon);
+        Assertions.assertEquals(triangles.size(), verticesCount - 2);
     }
 }
