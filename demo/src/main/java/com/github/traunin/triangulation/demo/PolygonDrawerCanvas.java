@@ -17,13 +17,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 
 public class PolygonDrawerCanvas {
-    private static boolean enableTriangulation = false;
     private final static Color DEFAULT_VERTEX_COLOR = Color.RED;
     private final static Color HIGHTLIGHT_VERTEX_COLOR = Color.YELLOW;
     private final static Color GHOST_VERTEX_COLOR = new Color(1, 0, 0, 0.1);
     private final static float DEFAULT_POLYGON_SIZE = 100f;
     private final static int SIDE_COUNT = 6;
     private final static float VERTEX_SIZE = 20f;
+
+    private boolean enableTriangulation = false;
+    private boolean showVertices = true;
+    private boolean showEdges = true;
+    private boolean showTriangles = true;
     private final List<Vertex> vertices = new ArrayList<>();
     private final Canvas canvas;
     private Vertex selectedVertex = null;
@@ -59,6 +63,10 @@ public class PolygonDrawerCanvas {
 
 
         canvas.setOnMousePressed(e -> {
+            if (!showVertices) {
+                return;
+            }
+
             if (selectedVertex != null) {
                 if (e.getButton() == MouseButton.SECONDARY && vertices.size() > 3) {
                     Vertex previous = null;
@@ -96,12 +104,20 @@ public class PolygonDrawerCanvas {
         });
 
         canvas.setOnMouseReleased(e -> {
+            if (!showVertices) {
+                return;
+            }
+
             if (selectedVertex != null) {
                 canvas.setCursor(Cursor.OPEN_HAND);
             }
         });
 
         canvas.setOnMouseMoved(e -> {
+            if (!showVertices) {
+                return;
+            }
+
             highlightVertex(e.getX(), e.getY());
             redraw();
 
@@ -111,6 +127,10 @@ public class PolygonDrawerCanvas {
         });
 
         canvas.setOnMouseDragged(e -> {
+            if (!showVertices) {
+                return;
+            }
+
             if (selectedVertex != null) {
                 selectedVertex.setPosition(new Vector2f((float) (e.getX() - offsetX), (float) (e.getY() - offsetY)));
                 canvas.setCursor(Cursor.CLOSED_HAND);
@@ -156,7 +176,7 @@ public class PolygonDrawerCanvas {
         double width = canvas.getWidth();
         double height = canvas.getHeight();
         ctx.clearRect(0, 0, width, height);
-        if (enableTriangulation) {
+        if (enableTriangulation && showTriangles) {
             List<Integer> vertexIndices = new ArrayList<>(vertices.size());
             List<Vector2f> verticesPositions = new ArrayList<>(vertices.size());
             for (Vertex vertex : vertices) {
@@ -190,12 +210,16 @@ public class PolygonDrawerCanvas {
             }
         }
 
-        for (Vertex vertex : vertices) {
-            drawEdge(vertex, ctx);
+        if (showEdges) {
+            for (Vertex vertex : vertices) {
+                drawEdge(vertex, ctx);
+            }
         }
 
-        for (Vertex vertex : vertices) {
-            drawVertex(vertex, ctx);
+        if (showVertices) {
+            for (Vertex vertex : vertices) {
+                drawVertex(vertex, ctx);
+            }
         }
     }
 
@@ -302,6 +326,21 @@ public class PolygonDrawerCanvas {
         }
         canvas.setCursor(Cursor.DEFAULT);
         selectedVertex = null;
+    }
+
+    public void toggleShowVertices() {
+        this.showVertices = !this.showVertices;
+        redraw();
+    }
+
+    public void toggleShowEdges() {
+        this.showEdges = !this.showEdges;
+        redraw();
+    }
+
+    public void toggleShowTriangles() {
+        this.showTriangles = !this.showTriangles;
+        redraw();
     }
 
     private static class Vertex {

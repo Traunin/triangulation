@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<VBox fx:id="rootVBox" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.traunin.triangulation.demo.AppController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.traunin.triangulation.demo.AppController">
    <children>
-      <Canvas fx:id="polygonCanvas" height="200.0" width="1000.0" VBox.vgrow="ALWAYS" />
+      <MenuBar VBox.vgrow="ALWAYS">
+        <menus>
+          <Menu mnemonicParsing="false" text="Demo settings">
+            <items>
+                  <CheckMenuItem mnemonicParsing="false" onAction="#handleToggleVertices" selected="true" text="Show vertices" />
+                  <CheckMenuItem mnemonicParsing="false" onAction="#handleToggleEdges" selected="true" text="Show edges" />
+                  <CheckMenuItem mnemonicParsing="false" onAction="#handleToggleTriangles" selected="true" text="Show triangles" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <VBox fx:id="rootVBox" alignment="CENTER" fillWidth="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
+         <children>
+            <Canvas fx:id="polygonCanvas" height="200.0" width="200.0" VBox.vgrow="ALWAYS" />
+         </children>
+      </VBox>
    </children>
 </VBox>

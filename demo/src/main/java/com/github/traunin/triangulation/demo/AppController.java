@@ -12,9 +12,25 @@ public class AppController implements Initializable {
     Canvas polygonCanvas;
     @FXML
     VBox rootVBox;
+    PolygonDrawerCanvas polygonDrawerCanvas;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        new PolygonDrawerCanvas(rootVBox, polygonCanvas);
+        polygonDrawerCanvas = new PolygonDrawerCanvas(rootVBox, polygonCanvas);
+    }
+
+    @FXML
+    public void handleToggleVertices() {
+        polygonDrawerCanvas.toggleShowVertices();
+    }
+
+    @FXML
+    public void handleToggleEdges() {
+        polygonDrawerCanvas.toggleShowEdges();
+    }
+
+    @FXML
+    public void handleToggleTriangles() {
+        polygonDrawerCanvas.toggleShowTriangles();
     }
 }
