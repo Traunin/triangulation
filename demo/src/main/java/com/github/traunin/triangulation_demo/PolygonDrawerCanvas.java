@@ -157,20 +157,25 @@ public class PolygonDrawerCanvas {
         ctx.clearRect(0, 0, width, height);
         if (enableTriangulation) {
             List<Integer> vertexIndices = new ArrayList<>(vertices.size());
+            List<Vector2f> verticesPositions = new ArrayList<>(vertices.size());
+            for (Vertex vertex : vertices) {
+                verticesPositions.add(vertex.position());
+            }
             Vertex startVertex = vertices.get(0);
             vertexIndices.add(0);
             for (
-                    Vertex currentVertex = startVertex.connected();
-                    currentVertex != startVertex;
-                    currentVertex = currentVertex.connected()
+                Vertex currentVertex = startVertex.connected();
+                currentVertex != startVertex;
+                currentVertex = currentVertex.connected()
             ) {
                 vertexIndices.add(vertices.indexOf(currentVertex));
             }
 
-            List<int[]> triangles = Triangulation.convexPolygonTriangulate(vertexIndices);
+            List<int[]> triangles = Triangulation.earClippingTriangulate(verticesPositions, vertexIndices);
+
             int i = 0;
             for (int[] triangle : triangles) {
-                ctx.setFill(Color.hsb(300f*i/triangles.size(), 1, 1));
+                ctx.setFill(Color.hsb(360f * i / triangles.size(), 1, 1));
                 drawTriangle(triangle, ctx);
                 i++;
             }
