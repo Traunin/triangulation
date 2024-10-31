@@ -15,7 +15,7 @@ class VectorMath {
         float check2 = crossProduct(p, b, c);
         float check3 = crossProduct(p, c, a);
 
-        return (check1 > 0 && check2 > 0 && check3 > 0) || (check1 < 0 && check2 < 0 && check3 < 0);
+        return (check1 >= 0 && check2 >= 0 && check3 >= 0) || (check1 <= 0 && check2 <= 0 && check3 <= 0);
     }
 
     private static float edgeLength(Vector2f a, Vector2f b) {
