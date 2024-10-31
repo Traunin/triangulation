@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.github.traunin.triangulation.Triangulation;
+import com.github.traunin.triangulation.TriangulationException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Cursor;
@@ -171,13 +172,21 @@ public class PolygonDrawerCanvas {
                 vertexIndices.add(vertices.indexOf(currentVertex));
             }
 
-            List<int[]> triangles = Triangulation.earClippingTriangulate(verticesPositions, vertexIndices);
-
-            int i = 0;
-            for (int[] triangle : triangles) {
-                ctx.setFill(Color.hsb(360f * i / triangles.size(), 1, 1));
-                drawTriangle(triangle, ctx);
-                i++;
+            try {
+                List<int[]> triangles = Triangulation.earClippingTriangulate(verticesPositions, vertexIndices);
+                int i = 0;
+                for (int[] triangle : triangles) {
+                    ctx.setFill(Color.hsb(360f * i / triangles.size(), 1, 1));
+                    drawTriangle(triangle, ctx);
+                    i++;
+                }
+                if (selectedVertex != null) {
+                    selectedVertex.setColor(HIGHTLIGHT_VERTEX_COLOR);
+                }
+            } catch (TriangulationException ignored) {
+                if (selectedVertex != null) {
+                    selectedVertex.setColor(Color.GREEN);
+                }
             }
         }
 
