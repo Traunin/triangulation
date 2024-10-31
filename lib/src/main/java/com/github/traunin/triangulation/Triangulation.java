@@ -55,6 +55,8 @@ public class Triangulation {
         List<Integer> potentialEars = new ArrayList<>(vertexIndices);
         int potentialEarsCount = vertexIndicesCount;
 
+        boolean isCCW = isCounterClockwise(vertices, vertexIndices);
+
         for (boolean hasClippedEars = true; hasClippedEars;) {
             hasClippedEars = false;
             for (int i = 1; i < potentialEarsCount - 1; i++) {
@@ -69,7 +71,7 @@ public class Triangulation {
                 float crossProduct = VectorMath.crossProduct(prevVertex, curVertex, nextVertex);
                 // check if convex
                 // TODO handle zero? points on one line or ends match
-                if (crossProduct < 0) {
+                if ((isCCW ? crossProduct : -crossProduct) < 0) {
                     continue;
                 }
                 boolean isEar = true;
@@ -107,5 +109,27 @@ public class Triangulation {
         }
 
         return triangles;
+    }
+
+    /**
+     * Calculates the polygon area using the shoelace formula. The direction is determined by the sign of the area.
+     *
+     * @param vertices List of vertices implementing {@link Vector2f}
+     * @param vertexIndices List of {@link Integer} determining vertices order
+     * @return true if counter-clockwise
+     */
+    private static <T extends Vector2f> boolean isCounterClockwise(List<T> vertices, List<Integer> vertexIndices) {
+        float area = 0;
+        int vertexIndicesCount = vertexIndices.size();
+
+        Vector2f prevVertex = vertices.get(vertexIndices.get(0));
+        for (int i = 1; i <= vertexIndicesCount; i++) {
+            Vector2f currentVertex = vertices.get(vertexIndices.get(i % vertexIndicesCount));
+
+            area += (currentVertex.x() - prevVertex.x()) * (currentVertex.y() + prevVertex.y());
+            prevVertex = currentVertex;
+        }
+
+        return area < 0;
     }
 }
