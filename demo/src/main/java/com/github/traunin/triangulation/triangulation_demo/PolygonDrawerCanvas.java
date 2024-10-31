@@ -1,10 +1,10 @@
-package com.github.traunin.triangulation_demo;
+package com.github.traunin.triangulation.triangulation_demo;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.github.traunin.Triangulation;
+import com.github.traunin.triangulation.Triangulation;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Cursor;

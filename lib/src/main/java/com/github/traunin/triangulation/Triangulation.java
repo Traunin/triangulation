@@ -1,4 +1,4 @@
-package com.github.traunin;
+package com.github.traunin.triangulation;
 
 import java.util.ArrayList;
 import java.util.List;

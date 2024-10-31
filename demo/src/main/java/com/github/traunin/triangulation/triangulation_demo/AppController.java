@@ -1,4 +1,4 @@
-package com.github.traunin.triangulation_demo;
+package com.github.traunin.triangulation.triangulation_demo;
 
 import java.net.URL;
 import java.util.ResourceBundle;

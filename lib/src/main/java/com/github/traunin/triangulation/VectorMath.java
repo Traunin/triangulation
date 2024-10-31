@@ -1,4 +1,4 @@
-package com.github.traunin;
+package com.github.traunin.triangulation;
 
 class VectorMath {
     static float crossProduct(Vector2f a, Vector2f b, Vector2f c) {

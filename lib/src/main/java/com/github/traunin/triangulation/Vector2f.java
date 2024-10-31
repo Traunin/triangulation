@@ -1,4 +1,4 @@
-package com.github.traunin;
+package com.github.traunin.triangulation;
 
 public interface Vector2f {
     float x();

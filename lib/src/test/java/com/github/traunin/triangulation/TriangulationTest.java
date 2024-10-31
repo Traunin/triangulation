@@ -1,4 +1,4 @@
-package com.github.traunin;
+package com.github.traunin.triangulation;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
