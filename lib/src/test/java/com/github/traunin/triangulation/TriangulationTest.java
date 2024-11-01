@@ -88,7 +88,8 @@ public class TriangulationTest {
 
         Assertions.assertEquals(-12, cwCrossProduct);
         Assertions.assertEquals(12, ccwCrossProduct);
-        Assertions.assertEquals(0, zeroCrossProduct);
+        // float my beloved
+        Assertions.assertEquals(0, Math.abs(zeroCrossProduct));
     }
 
     @Test
