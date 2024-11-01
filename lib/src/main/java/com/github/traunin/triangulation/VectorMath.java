@@ -1,6 +1,14 @@
 package com.github.traunin.triangulation;
 
-class VectorMath {
+final class VectorMath {
+    /**
+     * Prevents class instantiation.
+     * @throws UnsupportedOperationException when called
+     */
+    private VectorMath() {
+        throw new UnsupportedOperationException("Cannot be instantiated.");
+    }
+
     static float crossProduct(Vector2f a, Vector2f b, Vector2f c) {
         float dx1 = b.x() - a.x();
         float dy1 = b.y() - a.y();
