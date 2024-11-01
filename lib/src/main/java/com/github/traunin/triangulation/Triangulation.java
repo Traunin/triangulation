@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class Triangulation {
+public final class Triangulation {
+    private Triangulation() {
+        throw new UnsupportedOperationException("Cannot be instantiated.");
+    }
+
     private static void checkVertexIndicesCount(int n) {
         if (n < 3) {
             throw new IllegalArgumentException("Not enough vertex indices for a polygon");
