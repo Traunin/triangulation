@@ -18,7 +18,7 @@ class VectorMath {
         return (check1 >= 0 && check2 >= 0 && check3 >= 0) || (check1 <= 0 && check2 <= 0 && check3 <= 0);
     }
 
-    private static float edgeLength(Vector2f a, Vector2f b) {
+    static float edgeLength(Vector2f a, Vector2f b) {
         float dx = a.x() - b.x();
         float dy = a.y() - b.y();
         return (float) Math.sqrt(dx * dx + dy * dy);
