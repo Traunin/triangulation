@@ -1,5 +1,8 @@
 package com.github.traunin.triangulation;
 
+/**
+ * A utility class for working with {@link Vector2f}
+ */
 final class VectorMath {
     /**
      * Prevents class instantiation.
