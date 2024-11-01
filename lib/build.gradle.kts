@@ -17,3 +17,11 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+tasks.javadoc {
+    title = "Library API Documentation"
+
+    options {
+        encoding = "UTF-8"
+    }
+}
