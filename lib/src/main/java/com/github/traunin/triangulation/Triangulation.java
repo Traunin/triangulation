@@ -4,6 +4,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+/**
+ * A utility class for triangulating a 2D polygon.
+ *
+ * <p>Splits a polygon defined by a set of vertices into non-overlapping triangles.
+ * Assumes the polygon has no self-intersections. Works with both clockwise and
+ * counter-clockwise polygons.
+ *
+ * <p>Implemented algorithms
+ * <ul>
+ *     <li>Convex polygon fan triangulation</li>
+ *     <li>Ear clipping algorithm</li>
+ * </ul>
+ *
+ * <h2>Example Usage:</h2>
+ * <pre>{@code
+ * List<Vector2f> vertices = Arrays.asList(
+ *     new Vector2f(0, 0),
+ *     new Vector2f(1, 0),
+ *     new Vector2f(1, 1),
+ *     new Vector2f(0, 1)
+ * );
+ * List<Integer> vertexIndices = Arrays.asList(0, 1, 2, 3)
+ * List<int[]> triangles = Triangulation.earClippingTriangulate(vertices, vertexIndices)
+ * }</pre>
+ *
+ * This returns the triangles as vertex indices corresponding to the provided list.
+ *
+ * @see Vector2f
+ */
+
 public final class Triangulation {
     /**
      * Prevents class instantiation.
@@ -72,6 +102,7 @@ public final class Triangulation {
      * it works for most of the polygons you will encounter, this
      * should be used carefully as it works in O(n^2).
      *
+     * @param <T> the type of vertices, extending {@link Vector2f}
      * @param vertices vertices in order of connection
      * @return a {@code List} consisting of {@code int[]} with 3 indices,
      * corresponding to the vertices of a triangle
@@ -89,6 +120,7 @@ public final class Triangulation {
      * it works for most of the polygons you will encounter, this
      * should be used carefully as it works in O(n^2).
      *
+     * @param <T> the type of vertices, extending {@link Vector2f}
      * @param vertices vertices to select from
      * @param vertexIndices vertex indices in order of connection
      * @return a {@code List} consisting of {@code int[]} with 3 indices,
@@ -174,6 +206,7 @@ public final class Triangulation {
      * <p>Calculates the polygon area using the shoelace formula.
      * The direction is determined by the sign of the area.
      *
+     * @param <T> the type of vertices, extending {@link Vector2f}
      * @param vertices List of vertices implementing {@link Vector2f}
      * @param vertexIndices vertex indices in order of connection
      * @return true if counter-clockwise
