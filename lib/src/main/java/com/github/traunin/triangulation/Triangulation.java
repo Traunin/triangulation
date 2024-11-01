@@ -5,16 +5,37 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public final class Triangulation {
+    /**
+     * Prevents class instantiation.
+     * @throws UnsupportedOperationException when called
+     */
     private Triangulation() {
         throw new UnsupportedOperationException("Cannot be instantiated.");
     }
 
+    /**
+     * Checks if the number of indices in a polygon is correct.
+     * <p>Throws an exception if the number of vertices is less than 3
+     *
+     * @param n the number of vertex indices
+     * @throws IllegalArgumentException if {@code n} is less than 3
+     */
     private static void checkVertexIndicesCount(int n) {
         if (n < 3) {
             throw new IllegalArgumentException("Not enough vertex indices for a polygon");
         }
     }
 
+    /**
+     * Triangulates a convex polygon into a fan triangulation.
+     * <p>This a method for triangulating convex polygons from
+     * vertex indices. Results in a poor topology but works in O(n).
+     *
+     * @param vertexIndices vertex indices in order of connection
+     * @return a {@code List} consisting of {@code int[]} with 3 indices,
+     * corresponding to the vertices of a triangle
+     * @throws IllegalArgumentException if {@code vertexIndices} size is less than 3
+     */
     public static List<int[]> convexPolygonTriangulate(List<Integer> vertexIndices) {
         int vertexIndicesCount = vertexIndices.size();
         checkVertexIndicesCount(vertexIndicesCount);
@@ -28,19 +49,52 @@ public final class Triangulation {
         return triangles;
     }
 
+    /**
+     * Triangulates a convex polygon into a fan triangulation.
+     * <p>This a method for triangulating convex polygons with
+     * vertices labeled 0 through (n - 1). Results in a poor topology
+     * but works in O(n).
+     *
+     * @param n the number of vertices in a polygon
+     * @return a {@code List} consisting of {@code int[]} with 3 indices,
+     * corresponding to the vertices of a triangle
+     * @throws IllegalArgumentException if {@code n} is less than 3
+     */
     public static List<int[]> convexPolygonTriangulate(int n) {
         List<Integer> vertexIndices = IntStream.rangeClosed(0, n - 1).boxed().toList();
 
         return convexPolygonTriangulate(vertexIndices);
     }
 
-
+    /**
+     * Triangulates a polygon without self-intersections.
+     * <p>This method utilizes an ear clipping algorithm. Although
+     * it works for most of the polygons you will encounter, this
+     * should be used carefully as it works in O(n^2).
+     *
+     * @param vertices vertices in order of connection
+     * @return a {@code List} consisting of {@code int[]} with 3 indices,
+     * corresponding to the vertices of a triangle
+     * @throws IllegalArgumentException if {@code vertices} size is less than 3
+     */
     public static <T extends Vector2f> List<int[]> earClippingTriangulate(List<T> vertices) {
         List<Integer> vertexIndices = IntStream.rangeClosed(0, vertices.size() - 1).boxed().toList();
 
         return earClippingTriangulate(vertices, vertexIndices);
     }
 
+    /**
+     * Triangulates a polygon without self-intersections.
+     * <p>This method utilizes an ear clipping algorithm. Although
+     * it works for most of the polygons you will encounter, this
+     * should be used carefully as it works in O(n^2).
+     *
+     * @param vertices vertices to select from
+     * @param vertexIndices vertex indices in order of connection
+     * @return a {@code List} consisting of {@code int[]} with 3 indices,
+     * corresponding to the vertices of a triangle
+     * @throws IllegalArgumentException if {@code vertices} size is less than 3
+     */
     public static <T extends Vector2f> List<int[]> earClippingTriangulate(List<T> vertices, List<Integer> vertexIndices) {
         int vertexIndicesCount = vertexIndices.size();
         checkVertexIndicesCount(vertexIndicesCount);
@@ -116,10 +170,12 @@ public final class Triangulation {
     }
 
     /**
-     * Calculates the polygon area using the shoelace formula. The direction is determined by the sign of the area.
+     * Determines whether the polygon is clockwise or counter-clockwise.
+     * <p>Calculates the polygon area using the shoelace formula.
+     * The direction is determined by the sign of the area.
      *
      * @param vertices List of vertices implementing {@link Vector2f}
-     * @param vertexIndices List of {@link Integer} determining vertices order
+     * @param vertexIndices vertex indices in order of connection
      * @return true if counter-clockwise
      */
     private static <T extends Vector2f> boolean isCounterClockwise(List<T> vertices, List<Integer> vertexIndices) {
