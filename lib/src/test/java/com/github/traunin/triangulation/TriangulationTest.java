@@ -66,6 +66,56 @@ public class TriangulationTest {
         }
     }
 
+    @Test
+    public void testCrossProduct() {
+        float cwCrossProduct = VectorMath.crossProduct(
+            TRIANGLE.get(1),
+            TRIANGLE.get(0),
+            TRIANGLE.get(2)
+        );
+
+        float ccwCrossProduct = VectorMath.crossProduct(
+            TRIANGLE.get(2),
+            TRIANGLE.get(0),
+            TRIANGLE.get(1)
+        );
+
+        float zeroCrossProduct = VectorMath.crossProduct(
+            TRIANGLE.get(1),
+            TRIANGLE.get(0),
+            TRIANGLE.get(1)
+        );
+
+        Assertions.assertEquals(-12, cwCrossProduct);
+        Assertions.assertEquals(12, ccwCrossProduct);
+        Assertions.assertEquals(0, zeroCrossProduct);
+    }
+
+    @Test
+    public void testPointWithinTriangle() {
+        Assertions.assertTrue(VectorMath.isPointInTriangle(
+            TRIANGLE.get(1),
+            TRIANGLE.get(0),
+            TRIANGLE.get(2),
+            new ReadOnlyVector2f(1, 1)
+        ));
+
+        Assertions.assertFalse(VectorMath.isPointInTriangle(
+            TRIANGLE.get(1),
+            TRIANGLE.get(0),
+            TRIANGLE.get(2),
+            new ReadOnlyVector2f(10, 10)
+        ));
+    }
+
+    @Test
+    public void testEdgeLength() {
+        Assertions.assertEquals(5, VectorMath.edgeLength(
+            TRIANGLE.get(1),
+            TRIANGLE.get(2)
+        ));
+    }
+
     @RepeatedTest(10)
     public void testRandomPolygon() {
         int verticesCount = 10;
