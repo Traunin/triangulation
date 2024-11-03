@@ -22,3 +22,7 @@ javafx {
 application {
     mainClass = "com.github.traunin.triangulation.demo.App"
 }
+
+tasks.named("javadoc") {
+    enabled = false
+}
