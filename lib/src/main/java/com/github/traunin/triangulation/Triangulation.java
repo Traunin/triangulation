@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static com.github.traunin.triangulation.VectorMath.EPSILON;
+
 /**
  * A utility class for triangulating a 2D polygon.
  *
@@ -160,10 +162,10 @@ public final class Triangulation {
 
                 float crossProduct = VectorMath.crossProduct(prevVertex, curVertex, nextVertex);
                 // check if convex
-                // TODO handle zero? points on one line or ends match
-                if ((isCCW ? crossProduct : -crossProduct) < 0) {
+                if ((isCCW ? crossProduct : -crossProduct) < EPSILON) {
                     continue;
                 }
+                
                 boolean isEar = true;
 
                 // check if no other points in triangle
