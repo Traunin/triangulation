@@ -4,6 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.github.shimeoki.jfx.rasterization.color.HTMLColors;
+import com.github.shimeoki.jfx.rasterization.geom.FloatPoint2D;
+import com.github.shimeoki.jfx.rasterization.triangle.DDATriangler;
+import com.github.shimeoki.jfx.rasterization.triangle.Triangler;
+import com.github.shimeoki.jfx.rasterization.triangle.color.DefaultTriangleGradient;
+import com.github.shimeoki.jfx.rasterization.triangle.color.GradientTriangleColorer;
+import com.github.shimeoki.jfx.rasterization.triangle.color.TriangleColorer;
+import com.github.shimeoki.jfx.rasterization.triangle.geom.StaticTriangle;
+import com.github.shimeoki.jfx.rasterization.triangle.geom.Triangle;
 import com.github.traunin.triangulation.Triangulation;
 import com.github.traunin.triangulation.TriangulationException;
 import javafx.beans.value.ChangeListener;
@@ -34,6 +43,14 @@ public class PolygonDrawerCanvas {
     private Vertex ghostVertexEdge = null;
     private double offsetX;
     private double offsetY;
+
+    private Triangler triangler = new DDATriangler();
+    private TriangleColorer colorer = new GradientTriangleColorer(
+        new DefaultTriangleGradient(
+         HTMLColors.AQUA,
+         HTMLColors.FUCHSIA,
+         HTMLColors.LIME)
+    );
 
     /**
      * Attaches listeners to parent to update canvas size and redraw it upon parent size changes
@@ -224,18 +241,13 @@ public class PolygonDrawerCanvas {
     }
 
     private void drawTriangle(int[] vertexIndices, GraphicsContext ctx) {
-        double[] x = new double[] {
-            vertices.get(vertexIndices[0]).x(),
-            vertices.get(vertexIndices[1]).x(),
-            vertices.get(vertexIndices[2]).x(),
-        };
+        Triangle triangle = new StaticTriangle(
+            vertices.get(vertexIndices[0]),
+            vertices.get(vertexIndices[1]),
+            vertices.get(vertexIndices[2])
+        );
 
-        double[] y = new double[] {
-            vertices.get(vertexIndices[0]).y(),
-            vertices.get(vertexIndices[1]).y(),
-            vertices.get(vertexIndices[2]).y(),
-        };
-        ctx.fillPolygon(x, y, 3);
+        triangler.draw(ctx.getPixelWriter(), triangle, colorer);
     }
 
     private void drawVertex(Vertex vertex, GraphicsContext ctx) {
@@ -343,7 +355,7 @@ public class PolygonDrawerCanvas {
         redraw();
     }
 
-    private static class Vertex {
+    private static class Vertex implements FloatPoint2D {
         private Color color;
         private Vector2f position;
         private Vertex connected;

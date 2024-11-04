@@ -12,6 +12,7 @@ repositories {
 }
 dependencies {
     implementation(project(":lib"))
+    implementation(files("libs/lib-0.7.1.jar"))
 }
 
 javafx {
