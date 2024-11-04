@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.github.shimeoki.jfx.rasterization.color.HTMLColors;
+import com.github.shimeoki.jfx.rasterization.color.RGBColor;
 import com.github.shimeoki.jfx.rasterization.geom.FloatPoint2D;
+import com.github.shimeoki.jfx.rasterization.triangle.BresenhamTriangler;
 import com.github.shimeoki.jfx.rasterization.triangle.DDATriangler;
 import com.github.shimeoki.jfx.rasterization.triangle.Triangler;
 import com.github.shimeoki.jfx.rasterization.triangle.color.DefaultTriangleGradient;
@@ -44,13 +46,7 @@ public class PolygonDrawerCanvas {
     private double offsetX;
     private double offsetY;
 
-    private Triangler triangler = new DDATriangler();
-    private TriangleColorer colorer = new GradientTriangleColorer(
-        new DefaultTriangleGradient(
-         HTMLColors.AQUA,
-         HTMLColors.FUCHSIA,
-         HTMLColors.LIME)
-    );
+    private final Triangler triangler = new BresenhamTriangler();
 
     /**
      * Attaches listeners to parent to update canvas size and redraw it upon parent size changes
@@ -240,12 +236,28 @@ public class PolygonDrawerCanvas {
         }
     }
 
+    private RGBColor getVertexRainbowColor(Vertex v) {
+        float t = (float) (v.x() / canvas.getWidth());
+        float red = t > 0.5 ? 0 : 1 - 2 * t;
+        float green = t > 0.5 ? 2 - 2 * t : 2 * t;
+        float blue = t > 0.5 ? 2 * t - 1 : 0;
+
+        return new RGBColor(red, green, blue, 1);
+    }
+
     private void drawTriangle(int[] vertexIndices, GraphicsContext ctx) {
-        Triangle triangle = new StaticTriangle(
-            vertices.get(vertexIndices[0]),
-            vertices.get(vertexIndices[1]),
-            vertices.get(vertexIndices[2])
+        Vertex v1 = vertices.get(vertexIndices[0]);
+        Vertex v2 = vertices.get(vertexIndices[1]);
+        Vertex v3 = vertices.get(vertexIndices[2]);
+
+        TriangleColorer colorer = new GradientTriangleColorer(
+            new DefaultTriangleGradient(
+             getVertexRainbowColor(v1),
+             getVertexRainbowColor(v2),
+             getVertexRainbowColor(v3)
+            )
         );
+        Triangle triangle = new StaticTriangle(v1, v2, v3);
 
         triangler.draw(ctx.getPixelWriter(), triangle, colorer);
     }
