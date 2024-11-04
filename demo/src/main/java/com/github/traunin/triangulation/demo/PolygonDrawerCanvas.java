@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.github.shimeoki.jfx.rasterization.color.HTMLColors;
-import com.github.shimeoki.jfx.rasterization.color.RGBColor;
-import com.github.shimeoki.jfx.rasterization.geom.FloatPoint2D;
+import com.github.shimeoki.jfx.rasterization.color.Colorf;
+import com.github.shimeoki.jfx.rasterization.color.RGBColorf;
+import com.github.shimeoki.jfx.rasterization.geom.Pos2f;
 import com.github.shimeoki.jfx.rasterization.triangle.BresenhamTriangler;
 import com.github.shimeoki.jfx.rasterization.triangle.DDATriangler;
 import com.github.shimeoki.jfx.rasterization.triangle.Triangler;
-import com.github.shimeoki.jfx.rasterization.triangle.color.DefaultTriangleGradient;
-import com.github.shimeoki.jfx.rasterization.triangle.color.GradientTriangleColorer;
+import com.github.shimeoki.jfx.rasterization.triangle.color.StaticGradientTriangleColorer;
+import com.github.shimeoki.jfx.rasterization.triangle.color.StaticTriangleGradient;
 import com.github.shimeoki.jfx.rasterization.triangle.color.TriangleColorer;
+import com.github.shimeoki.jfx.rasterization.triangle.color.TriangleGradient;
 import com.github.shimeoki.jfx.rasterization.triangle.geom.StaticTriangle;
 import com.github.shimeoki.jfx.rasterization.triangle.geom.Triangle;
 import com.github.traunin.triangulation.Triangulation;
@@ -46,7 +47,7 @@ public class PolygonDrawerCanvas {
     private double offsetX;
     private double offsetY;
 
-    private final Triangler triangler = new DDATriangler();
+    private final Triangler triangler = new BresenhamTriangler();
 
     /**
      * Attaches listeners to parent to update canvas size and redraw it upon parent size changes
@@ -236,13 +237,13 @@ public class PolygonDrawerCanvas {
         }
     }
 
-    private RGBColor getVertexRainbowColor(Vertex v) {
+    private RGBColorf getVertexRainbowColor(Vertex v) {
         float t = (float) (v.x() / canvas.getWidth());
         float red = t > 0.5 ? 0 : 1 - 2 * t;
         float green = t > 0.5 ? 2 - 2 * t : 2 * t;
         float blue = t > 0.5 ? 2 * t - 1 : 0;
 
-        return new RGBColor(red, green, blue, 1);
+        return new RGBColorf(red, green, blue, 1);
     }
 
     private void drawTriangle(int[] vertexIndices, GraphicsContext ctx) {
@@ -250,8 +251,8 @@ public class PolygonDrawerCanvas {
         Vertex v2 = vertices.get(vertexIndices[1]);
         Vertex v3 = vertices.get(vertexIndices[2]);
 
-        TriangleColorer colorer = new GradientTriangleColorer(
-            new DefaultTriangleGradient(
+        TriangleColorer colorer = new StaticGradientTriangleColorer(
+            new StaticTriangleGradient(
              getVertexRainbowColor(v1),
              getVertexRainbowColor(v2),
              getVertexRainbowColor(v3)
@@ -367,7 +368,7 @@ public class PolygonDrawerCanvas {
         redraw();
     }
 
-    private static class Vertex implements FloatPoint2D {
+    private static class Vertex implements Pos2f {
         private Color color;
         private Vector2f position;
         private Vertex connected;
