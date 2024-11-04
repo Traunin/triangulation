@@ -46,7 +46,7 @@ public class PolygonDrawerCanvas {
     private double offsetX;
     private double offsetY;
 
-    private final Triangler triangler = new BresenhamTriangler();
+    private final Triangler triangler = new DDATriangler();
 
     /**
      * Attaches listeners to parent to update canvas size and redraw it upon parent size changes
