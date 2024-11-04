@@ -4,6 +4,12 @@ package com.github.traunin.triangulation;
  * A utility class for working with {@link Vector2f}
  */
 final class VectorMath {
+
+    /**
+     * A small number for float and double comparisons
+     */
+    public static final double EPSILON = 0.000000001;
+
     /**
      * Prevents class instantiation.
      * @throws UnsupportedOperationException when called
@@ -42,7 +48,8 @@ final class VectorMath {
         float check2 = crossProduct(p, b, c);
         float check3 = crossProduct(p, c, a);
 
-        return (check1 >= 0 && check2 >= 0 && check3 >= 0) || (check1 <= 0 && check2 <= 0 && check3 <= 0);
+        return (check1 >= -EPSILON && check2 >= -EPSILON && check3 >= -EPSILON) ||
+         (check1 <= EPSILON && check2 <= EPSILON && check3 <= EPSILON);
     }
 
     /**
