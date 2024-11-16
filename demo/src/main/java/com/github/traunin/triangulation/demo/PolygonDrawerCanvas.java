@@ -4,16 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.github.shimeoki.jfx.rasterization.color.Colorf;
 import com.github.shimeoki.jfx.rasterization.color.RGBColorf;
 import com.github.shimeoki.jfx.rasterization.geom.Pos2f;
-import com.github.shimeoki.jfx.rasterization.triangle.BresenhamTriangler;
-import com.github.shimeoki.jfx.rasterization.triangle.DDATriangler;
+import com.github.shimeoki.jfx.rasterization.triangle.IntBresenhamTriangler;
 import com.github.shimeoki.jfx.rasterization.triangle.Triangler;
 import com.github.shimeoki.jfx.rasterization.triangle.color.StaticGradientTriangleColorer;
 import com.github.shimeoki.jfx.rasterization.triangle.color.StaticTriangleGradient;
 import com.github.shimeoki.jfx.rasterization.triangle.color.TriangleColorer;
-import com.github.shimeoki.jfx.rasterization.triangle.color.TriangleGradient;
 import com.github.shimeoki.jfx.rasterization.triangle.geom.StaticTriangle;
 import com.github.shimeoki.jfx.rasterization.triangle.geom.Triangle;
 import com.github.traunin.triangulation.Triangulation;
@@ -47,7 +44,7 @@ public class PolygonDrawerCanvas {
     private double offsetX;
     private double offsetY;
 
-    private final Triangler triangler = new BresenhamTriangler();
+    private final Triangler triangler = new IntBresenhamTriangler();
 
     /**
      * Attaches listeners to parent to update canvas size and redraw it upon parent size changes
@@ -260,7 +257,7 @@ public class PolygonDrawerCanvas {
         );
         Triangle triangle = new StaticTriangle(v1, v2, v3);
 
-        triangler.draw(ctx.getPixelWriter(), triangle, colorer);
+        triangler.draw(ctx, triangle, colorer);
     }
 
     private void drawVertex(Vertex vertex, GraphicsContext ctx) {

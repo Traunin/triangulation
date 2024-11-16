@@ -1,0 +1,118 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.github.shimeoki",
+    "module": "jfx-rasterization",
+    "version": "1.0.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.10.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.openjfx",
+          "module": "javafx-graphics",
+          "version": {
+            "requires": "21"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "jfx-rasterization-1.0.0.jar",
+          "url": "jfx-rasterization-1.0.0.jar",
+          "size": 33473,
+          "sha512": "4ac5662a7b0563baa6ebc3288aca75f749df3f795d1973c325d43d61942da2b68b142542360ebf7e1f7479d19c3fcfb01d2902804524a4db80741dd21d7726ad",
+          "sha256": "fd33f17e6bbd7e12db18a61f59ef2bc89895ec9c32fe9d22e935455db4f31634",
+          "sha1": "2e27eba4347616a826429d83d9bab4460dbcfa29",
+          "md5": "0be049d7cef52993b751ac5fe784161c"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.openjfx",
+          "module": "javafx-graphics",
+          "version": {
+            "requires": "21"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "jfx-rasterization-1.0.0.jar",
+          "url": "jfx-rasterization-1.0.0.jar",
+          "size": 33473,
+          "sha512": "4ac5662a7b0563baa6ebc3288aca75f749df3f795d1973c325d43d61942da2b68b142542360ebf7e1f7479d19c3fcfb01d2902804524a4db80741dd21d7726ad",
+          "sha256": "fd33f17e6bbd7e12db18a61f59ef2bc89895ec9c32fe9d22e935455db4f31634",
+          "sha1": "2e27eba4347616a826429d83d9bab4460dbcfa29",
+          "md5": "0be049d7cef52993b751ac5fe784161c"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "jfx-rasterization-1.0.0-javadoc.jar",
+          "url": "jfx-rasterization-1.0.0-javadoc.jar",
+          "size": 224633,
+          "sha512": "508c15953de09f3f6bb0504671bc863b917dfdffe8ef353681e297815331d8a68c4ae310e0e897b6143b4d07edc6657e96057e1ec1ec2410e8223da51700cdf7",
+          "sha256": "d23900a788698695f62b152e938f44d13c5d7883ded230b1980fe6bbb573fbf3",
+          "sha1": "4a932d1582803286555f22ff6aef23e26729cb58",
+          "md5": "b2cb3cb76275e1f51a2773dba3844fed"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "jfx-rasterization-1.0.0-sources.jar",
+          "url": "jfx-rasterization-1.0.0-sources.jar",
+          "size": 36541,
+          "sha512": "864c34e24a401372ab494b647a8c46917f9e20c7ddea2a32bf79b70b498faca52b51a436a2a355ae6fdc0588c75816983bf853c91054b7681d7747c567317fd1",
+          "sha256": "a33d34accb04fb4450f983281db29f164a2ee3fdfa9424d94d07d0e880e7d021",
+          "sha1": "3bae13e677545f166726165a0d0a5a964524938a",
+          "md5": "e502ff4b491a49c1c81152c45a50e286"
+        }
+      ]
+    }
+  ]
+}
