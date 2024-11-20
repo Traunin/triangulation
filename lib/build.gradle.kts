@@ -5,6 +5,10 @@ plugins {
 group = "com.github.traunin"
 version = "1.0.0"
 
+base {
+    archivesName = rootProject.name
+}
+
 repositories {
     mavenCentral()
 }
