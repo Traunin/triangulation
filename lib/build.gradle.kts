@@ -2,7 +2,7 @@ plugins {
     id("java-library")
 }
 
-group = "com.github.traunin"
+group = "io.github.traunin"
 version = "1.0.0"
 
 base {

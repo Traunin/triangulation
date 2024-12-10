@@ -1,6 +1,6 @@
-package com.github.traunin.triangulation.demo;
+package io.github.traunin.triangulation.demo;
 
-public class Vector2f implements com.github.traunin.triangulation.Vector2f {
+public class Vector2f implements io.github.traunin.triangulation.Vector2f {
     private float x;
     private float y;
 

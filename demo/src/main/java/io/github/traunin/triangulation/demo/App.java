@@ -1,4 +1,4 @@
-package com.github.traunin.triangulation.demo;
+package io.github.traunin.triangulation.demo;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

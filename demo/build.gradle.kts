@@ -4,7 +4,7 @@ plugins {
     application
 }
 
-group = "com.github.traunin"
+group = "io.github.traunin"
 version = "1.0.0"
 
 repositories {
@@ -20,7 +20,7 @@ javafx {
 }
 
 application {
-    mainClass = "com.github.traunin.triangulation.demo.App"
+    mainClass = "io.github.traunin.triangulation.demo.App"
 }
 
 tasks.named("javadoc") {

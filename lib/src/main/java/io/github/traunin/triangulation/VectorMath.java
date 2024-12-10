@@ -1,4 +1,4 @@
-package com.github.traunin.triangulation;
+package io.github.traunin.triangulation;
 
 /**
  * A utility class for working with {@link Vector2f}

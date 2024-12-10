@@ -1,4 +1,4 @@
-package com.github.traunin.triangulation;
+package io.github.traunin.triangulation;
 
 /**
  * Represents a point in 2D space.

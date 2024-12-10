@@ -1,4 +1,4 @@
-package com.github.traunin.triangulation;
+package io.github.traunin.triangulation;
 
 /**
  * Thrown to indicate that the triangulation cannot be performed.

@@ -1,4 +1,4 @@
-package com.github.traunin.triangulation;
+package io.github.traunin.triangulation;
 
 public class ReadOnlyVector2f implements Vector2f {
     private final float x;

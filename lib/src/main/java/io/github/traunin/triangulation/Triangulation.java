@@ -1,10 +1,10 @@
-package com.github.traunin.triangulation;
+package io.github.traunin.triangulation;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static com.github.traunin.triangulation.VectorMath.EPSILON;
+import static io.github.traunin.triangulation.VectorMath.EPSILON;
 
 /**
  * A utility class for triangulating a 2D polygon.
