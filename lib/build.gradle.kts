@@ -1,7 +1,11 @@
 plugins {
+    id("base")
+    `kotlin-dsl`
+
     id("java-library")
-    id("maven-publish")
-    signing
+    id("java-library-distribution")
+
+    id("io.deepmedia.tools.deployer") version "0.15.0"
 }
 
 group = "io.github.traunin"
@@ -33,69 +37,61 @@ tasks.named<Test>("test") {
 //}
 
 java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+
     withJavadocJar()
     withSourcesJar()
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            artifactId = rootProject.name
-            from(components["java"])
-            // TODO
-            versionMapping {
-                usage("java-api") {
-                    fromResolutionOf("runtimeClasspath")
-                }
-                usage("java-runtime") {
-                    fromResolutionResult()
-                }
-            }
-            pom {
-                name = rootProject.name
-                description = "A Java triangulation library"
-                // TODO
-                url = "https://github.com/Traunin/triangulation"
-                // TODO
-                properties = mapOf(
-                    "myProp" to "value",
-                    "prop.with.dots" to "anotherValue"
-                )
-                licenses {
-                    license {
-                        name = "MIT"
-                        url = "https://github.com/Traunin/triangulation/blob/main/LICENSE"
-                    }
-                }
-                developers {
-                    developer {
-                        id = "Traunin"
-                        name = "Denis"
-                        email = "traunin5@gmail.com"
-                    }
-                }
-                scm {
-                    connection = "scm:git:git:/github.com/triangulation.git"
-                    developerConnection = "scm:git:ssh://github.com/triangulation.git"
-                    url = "https://github.com/Traunin/triangulation"
-                }
-            }
+deployer {
+    content {
+        component {
+            fromJava()
         }
     }
-    repositories {
-        maven {
-            name = "OSSRH"
-            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-            credentials {
-                username = System.getenv("MAVEN_USERNAME")
-                password = System.getenv("MAVEN_PASSWORD")
-            }
-        }
-    }
-}
 
-signing {
-    sign(publishing.publications["mavenJava"])
+    projectInfo {
+        name.set(rootProject.name)
+        description.set("A Java triangulation library.")
+        url.set("https://github.com/Traunin/triangulation")
+
+        artifactId.set(rootProject.name)
+
+        scm {
+            fromGithub("Traunin", "triangulation")
+        }
+
+        license(MIT)
+
+        developer("Traunin", "traunin5@gmail.com")
+    }
+
+    localSpec("m2") {
+    }
+
+    localSpec("artifact") {
+        directory.set(file("build/artifact"))
+    }
+
+    centralPortalSpec {
+        auth.user.set(secret("CENTRAL_PORTAL_USERNAME"))
+        auth.password.set(secret("CENTRAL_PORTAL_PASSWORD"))
+
+        signing {
+            key.set(secret("GPG_KEY"))
+            password.set(secret("GPG_PWD"))
+        }
+    }
+
+    githubSpec {
+        owner.set("Traunin")
+        repository.set("triangulation")
+
+        auth.user.set(secret("GITHUB_ACTOR"))
+        auth.token.set(secret("GITHUB_TOKEN"))
+    }
 }
 
 tasks.javadoc {
