@@ -9,11 +9,10 @@ version = "1.0.0"
 
 repositories {
     mavenCentral()
-    maven(url="../libs")
 }
 dependencies {
     implementation(project(":lib"))
-    implementation("com.github.shimeoki:jfx-rasterization:1.0.0")
+    implementation("io.github.shimeoki.jfx:rasterization:2.0.0")
 }
 
 javafx {

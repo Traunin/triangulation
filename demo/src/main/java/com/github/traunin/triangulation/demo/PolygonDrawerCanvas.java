@@ -4,17 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.github.shimeoki.jfx.rasterization.color.RGBColorf;
-import com.github.shimeoki.jfx.rasterization.geom.Pos2f;
-import com.github.shimeoki.jfx.rasterization.triangle.IntBresenhamTriangler;
-import com.github.shimeoki.jfx.rasterization.triangle.Triangler;
-import com.github.shimeoki.jfx.rasterization.triangle.color.StaticGradientTriangleColorer;
-import com.github.shimeoki.jfx.rasterization.triangle.color.StaticTriangleGradient;
-import com.github.shimeoki.jfx.rasterization.triangle.color.TriangleColorer;
-import com.github.shimeoki.jfx.rasterization.triangle.geom.StaticTriangle;
-import com.github.shimeoki.jfx.rasterization.triangle.geom.Triangle;
 import com.github.traunin.triangulation.Triangulation;
 import com.github.traunin.triangulation.TriangulationException;
+import io.github.shimeoki.jfx.rasterization.color.Colorf;
+import io.github.shimeoki.jfx.rasterization.geom.Point2f;
+import io.github.shimeoki.jfx.rasterization.triangle.IntBresenhamTriangler;
+import io.github.shimeoki.jfx.rasterization.triangle.Triangler;
+import io.github.shimeoki.jfx.rasterization.triangle.color.GradientTriangleFiller;
+import io.github.shimeoki.jfx.rasterization.triangle.color.TriangleFiller;
+import io.github.shimeoki.jfx.rasterization.triangle.geom.Polygon3;
+import io.github.shimeoki.jfx.rasterization.triangle.geom.Triangle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Cursor;
@@ -44,7 +43,7 @@ public class PolygonDrawerCanvas {
     private double offsetX;
     private double offsetY;
 
-    private final Triangler triangler = new IntBresenhamTriangler();
+    private final Triangler triangler;
 
     /**
      * Attaches listeners to parent to update canvas size and redraw it upon parent size changes
@@ -72,6 +71,7 @@ public class PolygonDrawerCanvas {
         };
         parent.heightProperty().addListener(listener);
 
+        triangler = new IntBresenhamTriangler(canvas.getGraphicsContext2D());
 
         canvas.setOnMousePressed(e -> {
             if (!showVertices) {
@@ -234,13 +234,13 @@ public class PolygonDrawerCanvas {
         }
     }
 
-    private RGBColorf getVertexRainbowColor(Vertex v) {
+    private Colorf getVertexRainbowColor(Vertex v) {
         float t = (float) (v.x() / canvas.getWidth());
         float red = t > 0.5 ? 0 : 1 - 2 * t;
         float green = t > 0.5 ? 2 - 2 * t : 2 * t;
         float blue = t > 0.5 ? 2 * t - 1 : 0;
 
-        return new RGBColorf(red, green, blue, 1);
+        return new Colorf(red, green, blue, 1);
     }
 
     private void drawTriangle(int[] vertexIndices, GraphicsContext ctx) {
@@ -248,16 +248,16 @@ public class PolygonDrawerCanvas {
         Vertex v2 = vertices.get(vertexIndices[1]);
         Vertex v3 = vertices.get(vertexIndices[2]);
 
-        TriangleColorer colorer = new StaticGradientTriangleColorer(
-            new StaticTriangleGradient(
+        TriangleFiller colorer = new GradientTriangleFiller(
              getVertexRainbowColor(v1),
              getVertexRainbowColor(v2),
              getVertexRainbowColor(v3)
-            )
         );
-        Triangle triangle = new StaticTriangle(v1, v2, v3);
+        triangler.setFiller(colorer);
 
-        triangler.draw(ctx, triangle, colorer);
+        Triangle triangle = new Polygon3(v1, v2, v3);
+
+        triangler.draw(triangle);
     }
 
     private void drawVertex(Vertex vertex, GraphicsContext ctx) {
@@ -365,7 +365,7 @@ public class PolygonDrawerCanvas {
         redraw();
     }
 
-    private static class Vertex implements Pos2f {
+    private static class Vertex implements Point2f {
         private Color color;
         private Vector2f position;
         private Vertex connected;
@@ -405,8 +405,18 @@ public class PolygonDrawerCanvas {
             return position.x();
         }
 
+        @Override
+        public void setX(float x) {
+            position.setX(x);
+        }
+
         public float y() {
             return position.y();
+        }
+
+        @Override
+        public void setY(float y) {
+            position.setY(y);
         }
 
         public Color color() {
