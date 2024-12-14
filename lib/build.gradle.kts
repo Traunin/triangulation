@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "io.github.traunin"
-version = "1.0.1"
+version = "1.1.0"
 
 base {
     archivesName = rootProject.name
