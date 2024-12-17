@@ -2,11 +2,32 @@
 
 This is the library used for polygon triangulation. Can be used for polygon rasterization by splitting them into triangles. If a polygon is in 3d space, it has to be rotated parallel to one of coordinate planes.
 
-## Download
+## Installation
+
+### Using Maven Central Repository
+
+https://central.sonatype.com/artifact/io.github.traunin/triangulation
+
+Maven example for `pom.xml`:
+
+```xml
+<dependency>
+  <groupId>io.github.traunin</groupId>
+  <artifactId>triangulation</artifactId>
+  <version>1.1.0</version>
+</dependency>
+```
+
+Gradle (Kotlin) example for `build.gradle.kts`:
+
+```kts
+implementation("io.github.traunin:triangulation:1.1.0")
+```
+
 
 If you don't want to build the library yourself, you can download the jar file from the releases tab.
 
-## Building
+### Building
 
 Clone the repository:
 
@@ -44,7 +65,7 @@ Then, modify the corresponding build file:
 ```groovy
 dependencies {
     # other dependencies above
-    implementation files('lib/DebugGraphics2D.jar')
+    implementation files('lib/triangulation-1.1.0.jar')
 }
 ```
 
@@ -53,7 +74,7 @@ dependencies {
 ```kts
 dependencies {
     // other dependencies above
-    implementation(files("lib/DebugGraphics2D.jar"))
+    implementation(files("lib/triangulation-1.1.0.jar"))
 }
 ```
 
