@@ -179,24 +179,9 @@ public final class Triangulation {
                     continue;
                 }
 
-                boolean isEar = true;
-
                 // if cross product is in [-EPSILON; EPSILON], effectively on one line
-                if (adjustedProduct > EPSILON) {
-                    // check if no other points in triangle
-                    for (int j = 0; j < vertexIndicesCount; j++) {
-                        int checkedVertexIndex = vertexIndices.get(j);
-                        if (triplet.containsIndex(checkedVertexIndex)) {
-                            continue;
-                        }
-
-                        Vector2f checkedVertex = vertices.get(checkedVertexIndex);
-                        if (VectorMath.isPointInTriangle(triplet, checkedVertex)) {
-                            isEar = false;
-                            break;
-                        }
-                    }
-                }
+                // here's hoping checkEar won't be called if product is less than epsilon
+                boolean isEar = adjustedProduct > EPSILON || checkEar(triplet, vertices, vertexIndices);
 
                 if (isEar) {
                     triangles.add(triplet.indicesAsArray());
@@ -209,6 +194,23 @@ public final class Triangulation {
         }
 
         return triangles;
+    }
+
+    private static <T extends Vector2f> boolean checkEar(IndexListTriplet<T> triplet, List<T> vertices,
+            List<Integer> vertexIndices) {
+        // check if no other points in triplet
+        for (int checkedVertexIndex : vertexIndices) {
+            if (triplet.containsIndex(checkedVertexIndex)) {
+                continue;
+            }
+
+            Vector2f checkedVertex = vertices.get(checkedVertexIndex);
+            if (VectorMath.isPointInTriangle(triplet, checkedVertex)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static void checkIndicesMapping(int vertexCount, List<Integer> vertexIndices) {
