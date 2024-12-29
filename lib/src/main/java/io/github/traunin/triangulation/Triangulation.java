@@ -9,17 +9,20 @@ import static io.github.traunin.triangulation.VectorMath.EPSILON;
 /**
  * A utility class for triangulating a 2D polygon.
  *
- * <p>Splits a polygon defined by a set of vertices into non-overlapping triangles.
+ * <p>
+ * Splits a polygon defined by a set of vertices into non-overlapping triangles.
  * Assumes the polygon has no self-intersections. Works with both clockwise and
  * counter-clockwise polygons.
  *
- * <p>Implemented algorithms
+ * <p>
+ * Implemented algorithms
  * <ul>
- *     <li>Convex polygon fan triangulation</li>
- *     <li>Ear clipping algorithm</li>
+ * <li>Convex polygon fan triangulation</li>
+ * <li>Ear clipping algorithm</li>
  * </ul>
  *
  * <h2>Example Usage:</h2>
+ * 
  * <pre>{@code
  * List<Vector2f> vertices = Arrays.asList(
  *     new Vector2f(0, 0),
@@ -31,7 +34,8 @@ import static io.github.traunin.triangulation.VectorMath.EPSILON;
  * List<int[]> triangles = Triangulation.earClippingTriangulate(vertices, vertexIndices)
  * }</pre>
  *
- * This returns the triangles as vertex indices corresponding to the provided list.
+ * This returns the triangles as vertex indices corresponding to the provided
+ * list.
  *
  * @see Vector2f
  */
@@ -39,6 +43,7 @@ import static io.github.traunin.triangulation.VectorMath.EPSILON;
 public final class Triangulation {
     /**
      * Prevents class instantiation.
+     * 
      * @throws UnsupportedOperationException when called
      */
     private Triangulation() {
@@ -47,7 +52,8 @@ public final class Triangulation {
 
     /**
      * Checks if the number of indices in a polygon is correct.
-     * <p>Throws an exception if the number of vertices is less than 3
+     * <p>
+     * Throws an exception if the number of vertices is less than 3
      *
      * @param n the number of vertex indices
      * @throws IllegalArgumentException if {@code n} is less than 3
@@ -60,12 +66,13 @@ public final class Triangulation {
 
     /**
      * Triangulates a convex polygon into a fan triangulation.
-     * <p>This a method for triangulating convex polygons from
+     * <p>
+     * This a method for triangulating convex polygons from
      * vertex indices. Results in a poor topology but works in O(n).
      *
      * @param vertexIndices vertex indices in order of connection
      * @return a {@code List} consisting of {@code int[]} with 3 indices,
-     * corresponding to the vertices of a triangle
+     *         corresponding to the vertices of a triangle
      * @throws IllegalArgumentException if {@code vertexIndices} size is less than 3
      */
     public static List<int[]> convexPolygonTriangulate(List<Integer> vertexIndices) {
@@ -75,7 +82,7 @@ public final class Triangulation {
         List<int[]> triangles = new ArrayList<>(vertexIndicesCount - 2);
 
         for (int i = 2; i < vertexIndicesCount; i++) {
-            triangles.add(new int[]{vertexIndices.get(0), vertexIndices.get(i), vertexIndices.get(i - 1)});
+            triangles.add(new int[] { vertexIndices.get(0), vertexIndices.get(i), vertexIndices.get(i - 1) });
         }
 
         return triangles;
@@ -83,13 +90,14 @@ public final class Triangulation {
 
     /**
      * Triangulates a convex polygon into a fan triangulation.
-     * <p>This a method for triangulating convex polygons with
+     * <p>
+     * This a method for triangulating convex polygons with
      * vertices labeled 0 through (n - 1). Results in a poor topology
      * but works in O(n).
      *
      * @param n the number of vertices in a polygon
      * @return a {@code List} consisting of {@code int[]} with 3 indices,
-     * corresponding to the vertices of a triangle
+     *         corresponding to the vertices of a triangle
      * @throws IllegalArgumentException if {@code n} is less than 3
      */
     public static List<int[]> convexPolygonTriangulate(int n) {
@@ -100,14 +108,15 @@ public final class Triangulation {
 
     /**
      * Triangulates a polygon without self-intersections.
-     * <p>This method utilizes an ear clipping algorithm. Although
+     * <p>
+     * This method utilizes an ear clipping algorithm. Although
      * it works for most of the polygons you will encounter, this
      * should be used carefully as it works in O(n^2).
      *
-     * @param <T> the type of vertices, extending {@link Vector2f}
+     * @param <T>      the type of vertices, extending {@link Vector2f}
      * @param vertices vertices in order of connection
      * @return a {@code List} consisting of {@code int[]} with 3 indices,
-     * corresponding to the vertices of a triangle
+     *         corresponding to the vertices of a triangle
      * @throws IllegalArgumentException if {@code vertices} size is less than 3
      */
     public static <T extends Vector2f> List<int[]> earClippingTriangulate(List<T> vertices) {
@@ -118,18 +127,20 @@ public final class Triangulation {
 
     /**
      * Triangulates a polygon without self-intersections.
-     * <p>This method utilizes an ear clipping algorithm. Although
+     * <p>
+     * This method utilizes an ear clipping algorithm. Although
      * it works for most of the polygons you will encounter, this
      * should be used carefully as it works in O(n^2).
      *
-     * @param <T> the type of vertices, extending {@link Vector2f}
-     * @param vertices vertices to select from
+     * @param <T>           the type of vertices, extending {@link Vector2f}
+     * @param vertices      vertices to select from
      * @param vertexIndices vertex indices in order of connection
      * @return a {@code List} consisting of {@code int[]} with 3 indices,
-     * corresponding to the vertices of a triangle
+     *         corresponding to the vertices of a triangle
      * @throws IllegalArgumentException if {@code vertices} size is less than 3
      */
-    public static <T extends Vector2f> List<int[]> earClippingTriangulate(List<T> vertices, List<Integer> vertexIndices) {
+    public static <T extends Vector2f> List<int[]> earClippingTriangulate(List<T> vertices,
+            List<Integer> vertexIndices) {
         int vertexIndicesCount = vertexIndices.size();
 
         checkVertexIndicesCount(vertexIndicesCount);
@@ -159,17 +170,15 @@ public final class Triangulation {
                 if ((isCCW ? crossProduct : -crossProduct) < EPSILON) {
                     continue;
                 }
-                
+
                 boolean isEar = true;
 
                 // check if no other points in triangle
                 for (int j = 0; j < vertexIndicesCount; j++) {
                     int checkedVertexIndex = vertexIndices.get(j);
-                    if (
-                        checkedVertexIndex == prevVertexIndex ||
-                        checkedVertexIndex == curVertexIndex ||
-                        checkedVertexIndex == nextVertexIndex
-                    ) {
+                    if (checkedVertexIndex == prevVertexIndex ||
+                            checkedVertexIndex == curVertexIndex ||
+                            checkedVertexIndex == nextVertexIndex) {
                         continue;
                     }
 
@@ -181,7 +190,7 @@ public final class Triangulation {
                 }
 
                 if (isEar) {
-                    triangles.add(new int[] {prevVertexIndex, curVertexIndex, nextVertexIndex});
+                    triangles.add(new int[] { prevVertexIndex, curVertexIndex, nextVertexIndex });
                     potentialEars.remove(i);
                     potentialEarsCount--;
                     i--;
@@ -201,19 +210,20 @@ public final class Triangulation {
         for (Integer vertexIndex : vertexIndices) {
             if (vertexIndex >= vertexCount) {
                 throw new IllegalArgumentException(
-                        String.format("Vertex index %d is outside of vertex list of length %d", vertexIndex, vertexCount)
-                );
+                        String.format("Vertex index %d is outside of vertex list of length %d", vertexIndex,
+                                vertexCount));
             }
         }
     }
 
     /**
      * Determines whether the polygon is clockwise or counter-clockwise.
-     * <p>Calculates the polygon area using the shoelace formula.
+     * <p>
+     * Calculates the polygon area using the shoelace formula.
      * The direction is determined by the sign of the area.
      *
-     * @param <T> the type of vertices, extending {@link Vector2f}
-     * @param vertices List of vertices implementing {@link Vector2f}
+     * @param <T>           the type of vertices, extending {@link Vector2f}
+     * @param vertices      List of vertices implementing {@link Vector2f}
      * @param vertexIndices vertex indices in order of connection
      * @return true if counter-clockwise
      */

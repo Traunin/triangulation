@@ -36,7 +36,9 @@ public class PolygonDrawerCanvas {
     private double offsetY;
 
     /**
-     * Attaches listeners to parent to update canvas size and redraw it upon parent size changes
+     * Attaches listeners to parent to update canvas size and redraw it upon parent
+     * size changes
+     * 
      * @param parent canvas parent - a scene pane
      * @param canvas canvas
      */
@@ -50,7 +52,7 @@ public class PolygonDrawerCanvas {
         // canvas has to be full size before finding the center point
         // javafx initializes height later than width
         // if the order changes... too bad
-        ChangeListener<Number> listener = new ChangeListener<>(){
+        ChangeListener<Number> listener = new ChangeListener<>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 initializePolygon();
@@ -60,7 +62,6 @@ public class PolygonDrawerCanvas {
             }
         };
         parent.heightProperty().addListener(listener);
-
 
         canvas.setOnMousePressed(e -> {
             if (!showVertices) {
@@ -92,9 +93,8 @@ public class PolygonDrawerCanvas {
 
             if (ghostVertexEdge != null && e.getButton() == MouseButton.PRIMARY) {
                 Vertex newVertex = new Vertex(
-                    pointOnEdge(ghostVertexEdge, e.getX(), e.getY()),
-                    HIGHTLIGHT_VERTEX_COLOR
-                );
+                        pointOnEdge(ghostVertexEdge, e.getX(), e.getY()),
+                        HIGHTLIGHT_VERTEX_COLOR);
                 newVertex.connect(ghostVertexEdge.connected());
                 ghostVertexEdge.connect(newVertex);
                 vertices.add(newVertex);
@@ -141,9 +141,8 @@ public class PolygonDrawerCanvas {
 
     public void initializePolygon() {
         Vertex initialVertex = new Vertex(new Vector2f(
-            (float) (DEFAULT_POLYGON_SIZE + canvas.getWidth() / 2),
-            (float) (canvas.getHeight() / 2)
-        ));
+                (float) (DEFAULT_POLYGON_SIZE + canvas.getWidth() / 2),
+                (float) (canvas.getHeight() / 2)));
         vertices.add(initialVertex);
 
         // polygon has at least 3 vertices
@@ -152,9 +151,8 @@ public class PolygonDrawerCanvas {
         Vertex prevVertex = initialVertex;
         for (int i = 1; i < sides; i++) {
             Vertex currentVertex = new Vertex(new Vector2f(
-                (float) (Math.cos(i * 2 * Math.PI / sides) * DEFAULT_POLYGON_SIZE + canvas.getWidth() / 2),
-                (float) (Math.sin(i * 2 * Math.PI / sides) * DEFAULT_POLYGON_SIZE + canvas.getHeight() / 2)
-            ));
+                    (float) (Math.cos(i * 2 * Math.PI / sides) * DEFAULT_POLYGON_SIZE + canvas.getWidth() / 2),
+                    (float) (Math.sin(i * 2 * Math.PI / sides) * DEFAULT_POLYGON_SIZE + canvas.getHeight() / 2)));
 
             vertices.add(currentVertex);
             prevVertex.connect(currentVertex);
@@ -184,11 +182,8 @@ public class PolygonDrawerCanvas {
             }
             Vertex startVertex = vertices.get(0);
             vertexIndices.add(0);
-            for (
-                Vertex currentVertex = startVertex.connected();
-                currentVertex != startVertex;
-                currentVertex = currentVertex.connected()
-            ) {
+            for (Vertex currentVertex = startVertex
+                    .connected(); currentVertex != startVertex; currentVertex = currentVertex.connected()) {
                 vertexIndices.add(vertices.indexOf(currentVertex));
             }
 
@@ -225,15 +220,15 @@ public class PolygonDrawerCanvas {
 
     private void drawTriangle(int[] vertexIndices, GraphicsContext ctx) {
         double[] x = new double[] {
-            vertices.get(vertexIndices[0]).x(),
-            vertices.get(vertexIndices[1]).x(),
-            vertices.get(vertexIndices[2]).x(),
+                vertices.get(vertexIndices[0]).x(),
+                vertices.get(vertexIndices[1]).x(),
+                vertices.get(vertexIndices[2]).x(),
         };
 
         double[] y = new double[] {
-            vertices.get(vertexIndices[0]).y(),
-            vertices.get(vertexIndices[1]).y(),
-            vertices.get(vertexIndices[2]).y(),
+                vertices.get(vertexIndices[0]).y(),
+                vertices.get(vertexIndices[1]).y(),
+                vertices.get(vertexIndices[2]).y(),
         };
         ctx.fillPolygon(x, y, 3);
     }
@@ -241,21 +236,19 @@ public class PolygonDrawerCanvas {
     private void drawVertex(Vertex vertex, GraphicsContext ctx) {
         ctx.setFill(vertex.color());
         ctx.fillArc(
-            vertex.x() - VERTEX_SIZE / 2,
-            vertex.y() - VERTEX_SIZE / 2,
-            VERTEX_SIZE,
-            VERTEX_SIZE,
-            0,
-            360,
-            ArcType.ROUND
-        );
+                vertex.x() - VERTEX_SIZE / 2,
+                vertex.y() - VERTEX_SIZE / 2,
+                VERTEX_SIZE,
+                VERTEX_SIZE,
+                0,
+                360,
+                ArcType.ROUND);
     }
 
     private void drawGhostVertex(double mouseX, double mouseY, GraphicsContext ctx) {
         for (Vertex vertex : vertices) {
             if (isCursorOnEdge(
-                vertex.x(), vertex.y(), vertex.connected().x(), vertex.connected().y(), mouseX, mouseY
-            )) {
+                    vertex.x(), vertex.y(), vertex.connected().x(), vertex.connected().y(), mouseX, mouseY)) {
                 canvas.setCursor(Cursor.CROSSHAIR);
                 ghostVertexEdge = vertex;
                 drawVertex(new Vertex(pointOnEdge(vertex, mouseX, mouseY), GHOST_VERTEX_COLOR), ctx);
@@ -267,8 +260,8 @@ public class PolygonDrawerCanvas {
     }
 
     private boolean isCursorOnEdge(
-        double edgePoint1X, double edgePoint1Y, double edgePoint2X, double edgePoint2Y, double mouseX, double mouseY
-    ) {
+            double edgePoint1X, double edgePoint1Y, double edgePoint2X, double edgePoint2Y, double mouseX,
+            double mouseY) {
         double k = (float) (edgePoint2X - edgePoint1X) / (edgePoint2Y - edgePoint1Y);
         double pointYOnLine1 = k * (edgePoint1X - mouseX) + edgePoint1Y;
         double pointYOnLine2 = k * (edgePoint2X - mouseX) + edgePoint2Y;
@@ -279,10 +272,9 @@ public class PolygonDrawerCanvas {
         }
 
         double mouseToEdgeDistance = distanceFromPointToLine(
-            mouseX, mouseY, edgePoint1X, edgePoint1Y, edgePoint2X, edgePoint2Y
-        );
+                mouseX, mouseY, edgePoint1X, edgePoint1Y, edgePoint2X, edgePoint2Y);
 
-        return  mouseToEdgeDistance <= VERTEX_SIZE / 2;
+        return mouseToEdgeDistance <= VERTEX_SIZE / 2;
     }
 
     private double distanceFromPointToLine(double x0, double y0, double x1, double y1, double x2, double y2) {
@@ -301,9 +293,8 @@ public class PolygonDrawerCanvas {
         double t = ((mouseX - edgePoint1.x()) * (edgeXLen) + (mouseY - edgePoint1.y()) * edgeYLen) / edgeLenSquare;
 
         return new Vector2f(
-            (float) (edgePoint1.x() + edgeXLen * t),
-            (float) (edgePoint1.y() + edgeYLen * t)
-        );
+                (float) (edgePoint1.x() + edgeXLen * t),
+                (float) (edgePoint1.y() + edgeYLen * t));
     }
 
     private void drawEdge(Vertex vertex, GraphicsContext ctx) {

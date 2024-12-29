@@ -12,6 +12,7 @@ final class VectorMath {
 
     /**
      * Prevents class instantiation.
+     * 
      * @throws UnsupportedOperationException when called
      */
     private VectorMath() {
@@ -20,6 +21,7 @@ final class VectorMath {
 
     /**
      * Calculates the cross product of vectors (BA) x (BC).
+     * 
      * @param a A coordinates
      * @param b B coordinates
      * @param c C coordinates
@@ -36,7 +38,9 @@ final class VectorMath {
 
     /**
      * Checks whether point P is inside of triangle ABC.
-     * <p>Uses the cross product of three vectors.
+     * <p>
+     * Uses the cross product of three vectors.
+     * 
      * @param a A coordinates
      * @param b B coordinates
      * @param c C coordinates
@@ -49,11 +53,12 @@ final class VectorMath {
         float check3 = crossProduct(p, c, a);
 
         return (check1 >= -EPSILON && check2 >= -EPSILON && check3 >= -EPSILON) ||
-         (check1 <= EPSILON && check2 <= EPSILON && check3 <= EPSILON);
+                (check1 <= EPSILON && check2 <= EPSILON && check3 <= EPSILON);
     }
 
     /**
      * Calculates the length of vector AB.
+     * 
      * @param a A coordinates
      * @param b B coordinates
      * @return length of vector AB
