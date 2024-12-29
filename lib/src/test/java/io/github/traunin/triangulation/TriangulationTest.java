@@ -23,6 +23,12 @@ public class TriangulationTest {
             new ReadOnlyVector2f(-1, 1),
             new ReadOnlyVector2f(2, 0));
 
+    private final static List<ReadOnlyVector2f> SLIM_POLYGON = Arrays.asList(
+            new ReadOnlyVector2f(0.62304f, 0.62304f),
+            new ReadOnlyVector2f(0.59179f, 0.59179f),
+            new ReadOnlyVector2f(0.62493f, 0.62493f),
+            new ReadOnlyVector2f(0.66009f, 0.66009f));
+
     @Test
     public void testConvexTriangulation() {
         List<int[]> triangleList = Triangulation.convexPolygonTriangulate(Arrays.asList(0, 1, 2, 3, 4));
@@ -61,6 +67,16 @@ public class TriangulationTest {
         } catch (TriangulationException exception) {
             String expectedError = "Polygon has self-intersections";
             Assertions.assertEquals(expectedError, exception.getMessage());
+        }
+    }
+
+    @Test
+    public void testSlimPolygon() {
+        try {
+            Triangulation.earClippingTriangulate(SLIM_POLYGON);
+            Assertions.assertTrue(true);
+        } catch (TriangulationException exception) {
+            Assertions.fail();
         }
     }
 
