@@ -181,7 +181,7 @@ public final class Triangulation {
 
                 // if cross product is in [-EPSILON; EPSILON], effectively on one line
                 // here's hoping checkEar won't be called if product is less than epsilon
-                boolean isEar = adjustedProduct > EPSILON || checkEar(triplet, vertices, vertexIndices);
+                boolean isEar = adjustedProduct <= EPSILON || checkEar(triplet, vertices, vertexIndices);
 
                 if (isEar) {
                     triangles.add(triplet.indicesAsArray());
