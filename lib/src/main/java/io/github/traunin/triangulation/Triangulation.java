@@ -167,26 +167,30 @@ public final class Triangulation {
                 Vector2f nextVertex = vertices.get(nextVertexIndex);
 
                 float crossProduct = VectorMath.crossProduct(prevVertex, curVertex, nextVertex);
+                float adjustedProduct = isCCW ? crossProduct : -crossProduct;
                 // check if convex
-                if ((isCCW ? crossProduct : -crossProduct) < EPSILON) {
+                if (adjustedProduct < -EPSILON) {
                     continue;
                 }
 
                 boolean isEar = true;
 
-                // check if no other points in triangle
-                for (int j = 0; j < vertexIndicesCount; j++) {
-                    int checkedVertexIndex = vertexIndices.get(j);
-                    if (checkedVertexIndex == prevVertexIndex ||
-                            checkedVertexIndex == curVertexIndex ||
-                            checkedVertexIndex == nextVertexIndex) {
-                        continue;
-                    }
+                // if cross product is in [-EPSILON; EPSILON], effectively on one line
+                if (adjustedProduct > EPSILON) {
+                    // check if no other points in triangle
+                    for (int j = 0; j < vertexIndicesCount; j++) {
+                        int checkedVertexIndex = vertexIndices.get(j);
+                        if (checkedVertexIndex == prevVertexIndex ||
+                                checkedVertexIndex == curVertexIndex ||
+                                checkedVertexIndex == nextVertexIndex) {
+                            continue;
+                        }
 
-                    Vector2f checkedVertex = vertices.get(checkedVertexIndex);
-                    if (VectorMath.isPointInTriangle(prevVertex, curVertex, nextVertex, checkedVertex)) {
-                        isEar = false;
-                        break;
+                        Vector2f checkedVertex = vertices.get(checkedVertexIndex);
+                        if (VectorMath.isPointInTriangle(prevVertex, curVertex, nextVertex, checkedVertex)) {
+                            isEar = false;
+                            break;
+                        }
                     }
                 }
 
