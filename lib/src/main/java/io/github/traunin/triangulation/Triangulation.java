@@ -131,16 +131,10 @@ public final class Triangulation {
      */
     public static <T extends Vector2f> List<int[]> earClippingTriangulate(List<T> vertices, List<Integer> vertexIndices) {
         int vertexIndicesCount = vertexIndices.size();
-        checkVertexIndicesCount(vertexIndicesCount);
 
+        checkVertexIndicesCount(vertexIndicesCount);
         int vertexCount = vertices.size();
-        for (Integer vertexIndex : vertexIndices) {
-            if (vertexIndex >= vertexCount) {
-                throw new IllegalArgumentException(
-                    String.format("Vertex index %d is outside of vertex list of length %d", vertexIndex, vertexCount)
-                );
-            }
-        }
+        checkIndicesMapping(vertexCount, vertexIndices);
 
         List<int[]> triangles = new ArrayList<>(vertexIndicesCount - 2);
         // copy vertexIndices to avoid side effects on input data
@@ -201,6 +195,16 @@ public final class Triangulation {
         }
 
         return triangles;
+    }
+
+    private static void checkIndicesMapping(int vertexCount, List<Integer> vertexIndices) {
+        for (Integer vertexIndex : vertexIndices) {
+            if (vertexIndex >= vertexCount) {
+                throw new IllegalArgumentException(
+                        String.format("Vertex index %d is outside of vertex list of length %d", vertexIndex, vertexCount)
+                );
+            }
+        }
     }
 
     /**
