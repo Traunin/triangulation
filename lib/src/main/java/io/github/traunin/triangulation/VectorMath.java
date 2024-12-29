@@ -36,6 +36,10 @@ final class VectorMath {
         return dx1 * dy2 - dx2 * dy1;
     }
 
+    static <T extends Vector2f> float crossProduct(IndexListTriplet<T> triplet) {
+        return crossProduct(triplet.prevElement(), triplet.curElement(), triplet.nextElement());
+    }
+
     /**
      * Checks whether point P is inside of triangle ABC.
      * <p>
@@ -54,6 +58,10 @@ final class VectorMath {
 
         return (check1 >= -EPSILON && check2 >= -EPSILON && check3 >= -EPSILON) ||
                 (check1 <= EPSILON && check2 <= EPSILON && check3 <= EPSILON);
+    }
+
+    static <T extends Vector2f> boolean isPointInTriangle(IndexListTriplet<T> triplet, Vector2f p) {
+        return isPointInTriangle(triplet.prevElement(), triplet.curElement(), triplet.nextElement(), p);
     }
 
     /**

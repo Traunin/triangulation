@@ -148,25 +148,31 @@ public final class Triangulation {
         int vertexCount = vertices.size();
         checkIndicesMapping(vertexCount, vertexIndices);
 
+        boolean isCCW = isCounterClockwise(vertices, vertexIndices);
+        List<int[]> triangles = clipEars(vertices, vertexIndices, isCCW);
+
+        if (triangles.size() != vertexIndicesCount - 2) {
+            throw new TriangulationException("Polygon has self-intersections");
+        }
+
+        return triangles;
+    }
+
+    private static <T extends Vector2f> List<int[]> clipEars(List<T> vertices, List<Integer> vertexIndices,
+            boolean isCCW) {
+        int vertexIndicesCount = vertexIndices.size();
+
         List<int[]> triangles = new ArrayList<>(vertexIndicesCount - 2);
         // copy vertexIndices to avoid side effects on input data
         List<Integer> potentialEars = new ArrayList<>(vertexIndices);
         int potentialEarsCount = vertexIndicesCount;
 
-        boolean isCCW = isCounterClockwise(vertices, vertexIndices);
-
         for (boolean hasClippedEars = true; hasClippedEars;) {
             hasClippedEars = false;
             for (int i = 1; i < potentialEarsCount - 1; i++) {
-                int prevVertexIndex = potentialEars.get(i - 1);
-                int curVertexIndex = potentialEars.get(i);
-                int nextVertexIndex = potentialEars.get(i + 1);
+                IndexListTriplet<T> triplet = IndexListTriplet.fromCurInList(i, potentialEars, vertices);
 
-                Vector2f prevVertex = vertices.get(prevVertexIndex);
-                Vector2f curVertex = vertices.get(curVertexIndex);
-                Vector2f nextVertex = vertices.get(nextVertexIndex);
-
-                float crossProduct = VectorMath.crossProduct(prevVertex, curVertex, nextVertex);
+                float crossProduct = VectorMath.crossProduct(triplet);
                 float adjustedProduct = isCCW ? crossProduct : -crossProduct;
                 // check if convex
                 if (adjustedProduct < -EPSILON) {
@@ -180,14 +186,12 @@ public final class Triangulation {
                     // check if no other points in triangle
                     for (int j = 0; j < vertexIndicesCount; j++) {
                         int checkedVertexIndex = vertexIndices.get(j);
-                        if (checkedVertexIndex == prevVertexIndex ||
-                                checkedVertexIndex == curVertexIndex ||
-                                checkedVertexIndex == nextVertexIndex) {
+                        if (triplet.containsIndex(checkedVertexIndex)) {
                             continue;
                         }
 
                         Vector2f checkedVertex = vertices.get(checkedVertexIndex);
-                        if (VectorMath.isPointInTriangle(prevVertex, curVertex, nextVertex, checkedVertex)) {
+                        if (VectorMath.isPointInTriangle(triplet, checkedVertex)) {
                             isEar = false;
                             break;
                         }
@@ -195,17 +199,13 @@ public final class Triangulation {
                 }
 
                 if (isEar) {
-                    triangles.add(new int[] { prevVertexIndex, curVertexIndex, nextVertexIndex });
+                    triangles.add(triplet.indicesAsArray());
                     potentialEars.remove(i);
                     potentialEarsCount--;
                     i--;
                     hasClippedEars = true;
                 }
             }
-        }
-
-        if (triangles.size() != vertexIndicesCount - 2) {
-            throw new TriangulationException("Polygon has self-intersections");
         }
 
         return triangles;
