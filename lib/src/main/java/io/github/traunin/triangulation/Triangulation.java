@@ -81,8 +81,9 @@ public final class Triangulation {
 
         List<int[]> triangles = new ArrayList<>(vertexIndicesCount - 2);
 
+        final int originVertexIndex = vertexIndices.get(0);
         for (int i = 2; i < vertexIndicesCount; i++) {
-            triangles.add(new int[] { vertexIndices.get(0), vertexIndices.get(i), vertexIndices.get(i - 1) });
+            triangles.add(new int[] { originVertexIndex, vertexIndices.get(i), vertexIndices.get(i - 1) });
         }
 
         return triangles;
